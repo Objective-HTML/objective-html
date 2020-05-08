@@ -1,16 +1,14 @@
 <objective>
-  <!-- Simple sum function -->
   <function name=sum arguments=[number1,number2]>
     <define name=result>
       {number1 + number2}
     </define>
-    <if result.higher(0)>
+    <if result higher 0>
       <return>
         {result}
       </return>
     </if>
   </function>
-  <!-- Print sum function return value -->
   <print>
     <sum>[6, 8]</sum>
   </print>
