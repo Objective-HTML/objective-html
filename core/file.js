@@ -15,7 +15,7 @@ export default class File {
 
           return new Promise ((resolve, reject) => {
                FS.readFile(this.file, 'UTF-8', (error, content) => {
-                    if (error) reject(error)
+                    if (error) reject(new Error(error))
                     resolve(content)
                })
           })
