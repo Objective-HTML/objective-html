@@ -10,5 +10,10 @@ describe('#Lexer', () => {
 
   })
 
+  it('should return a map', () => {
+    new File('tests/html/sum.html').read().then(content => {
+      Chai.expect(typeof new Lexer(content).lexer()).to.eqls('object')
+    })
+  })
 
 })
