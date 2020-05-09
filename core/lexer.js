@@ -18,7 +18,10 @@ export default class Lexer {
 
         if (this.content.length < 1) throw new Error('File content cannot be empty!')
 
-        const inline_code = this.content.split(/\r?\n/g).map(x => x.trim()).filter(x => x !== '').join('')
+        const inline_code = this.content.split(/\r?\n/g)
+                                        .map(x => x.trim())
+                                        .filter(x => x !== '')
+                                        .join('')
         const code_status = new Map()
 
         for (const i in inline_code) {
@@ -29,7 +32,7 @@ export default class Lexer {
             if ((this.status === 'BLOCK_VALUE') && inline_code[i] === '{' || inline_code[i] === '}' ) this.status = 'BLOCK_VARIABLE'
             code_status.set(inline_code[i] + ' | ' + i, this.status)
         }
-        
+
         return code_status
 
     }

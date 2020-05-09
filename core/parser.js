@@ -23,7 +23,9 @@ export default class Parser {
 
 
         for (const i of this.lexer) {
-            const element    = i[0].split('|').map(x => x.trim()).map(x => x === '' ? x = ' ' : x),
+            const element    = i[0].split('|')
+                                   .map(x => x.trim())
+                                   .map(x => x === '' ? x = ' ' : x),
                   char       = element[0],
                   content    = i[1]
             switch (content) {
@@ -83,7 +85,8 @@ export default class Parser {
             }
         }
         
-        blocks.map(x => x.join('')).map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
+        blocks.map(x => x.join(''))
+              .map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
 
         const blcks_lst = []
 
@@ -112,18 +115,25 @@ export default class Parser {
 
                     if (block.startsWith('/')) {
 
-                        block = block.slice(1).split(' ')[0]
+                        block = block.slice(1)
+                                     .split(' ')[0]
                         id    = block.toUpperCase() + '_END'
                         
                     } else {
 
-                        id    = block.split(' ')[0].toUpperCase() + '_START'
+                        id    = block.split(' ')[0]
+                                     .toUpperCase() + '_START'
 
                     }
 
-                    args      = block.split(' ').slice(1).join(' ').trim().split(' ') || []
+                    args      = block.split(' ')
+                                     .slice(1)
+                                     .join(' ')
+                                     .trim()
+                                     .split(' ') || []
                     args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
-                    params.map(x => param_map.push({name: x.split('=')[0], value: x.split('=')[1].replace(/\"|\'/g, '')}))
+                    params.map(x => param_map.push({name: x.split('=')[0], value: x.split('=')[1]
+                                                                                   .replace(/\"|\'/g, '')}))
                     block     = block.split(' ')[0]
                 }
 
@@ -131,7 +141,11 @@ export default class Parser {
 
             } else if (status === 'TEXT' || status === 'VARIABLE') {
 
-                blcks_lst.push({ block: item, id: index, type: status })
+                blcks_lst.push({ 
+                    block: item, 
+                    id: index, 
+                    type: status 
+                })
 
             }
         }
