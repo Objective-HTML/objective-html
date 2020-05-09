@@ -90,7 +90,7 @@ export default class Parser {
         for (const i of parse_blcks) {
 
             const element   = i[0].split('_'),
-                  index     = element[0],
+                  index     = parseInt(element[0]),
                   item      = element[1],
                   status    = i[1]
             let   id        = '',
