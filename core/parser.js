@@ -123,19 +123,19 @@ export default class Parser {
 
                     args      = block.split(' ').slice(1).join(' ').trim().split(' ') || []
                     args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
-                    params.map(x => param_map.push({name: x.split('=')[0], value:x.split('=')[1]}))
+                    params.map(x => param_map.push({name: x.split('=')[0], value: x.split('=')[1].replace(/\"|\'/g, '')}))
                     block     = block.split(' ')[0]
                 }
 
-                
                 blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map })
 
             } else if (status === 'TEXT' || status === 'VARIABLE') {
 
                 blcks_lst.push({ block: item, id: index, type: status })
+
             }
         }
-        
+
         return blcks_lst
 
     }
