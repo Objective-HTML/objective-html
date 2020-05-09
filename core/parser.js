@@ -97,29 +97,45 @@ export default class Parser {
                   args      = [],
                   params    = [],
                   variables = [],
-                  param_map = []
-            
+                  param_map = [],
+                  block     = ''
             if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
 
-                let block = item.slice(1, item.length - 1)
+                if (item.includes('<!--') && item.includes('-->')) {
 
-                if (block.startsWith('/')) {
-                    block = block.slice(1).split(' ')[0]
-                    id    = block.toUpperCase() + '_END'
-                    
+                    block = item
+                    id    = 'COMMENT'
+
                 } else {
-                    id    = block.split(' ')[0].toUpperCase() + '_START'
+
+                    block = item.slice(1, item.length - 1)
+
+                    if (block.startsWith('/')) {
+
+                        block = block.slice(1).split(' ')[0]
+                        id    = block.toUpperCase() + '_END'
+                        
+                    } else {
+
+                        id    = block.split(' ')[0].toUpperCase() + '_START'
+
+                    }
+
+                    args      = block.split(' ').slice(1).join(' ').trim().split(' ') || []
+                    args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
+                    params.map(x => param_map.push({name: x.split('=')[0], value:x.split('=')[1]}))
+                    block     = block.split(' ')[0]
                 }
-                args      = block.split(' ').slice(1).join(' ').trim().split(' ') || []
-                args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
-                params.map(x => param_map.push({name: x.split('=')[0], value:x.split('=')[1]}))
-                block     = block.split(' ')[0]
+
+                
                 blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map })
 
             } else if (status === 'TEXT' || status === 'VARIABLE') {
+
                 blcks_lst.push({ block: item, id: index, type: status })
             }
         }
+        
         return blcks_lst
 
     }

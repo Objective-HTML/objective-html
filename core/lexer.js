@@ -29,7 +29,7 @@ export default class Lexer {
             if ((this.status === 'BLOCK_VALUE') && inline_code[i] === '{' || inline_code[i] === '}' ) this.status = 'BLOCK_VARIABLE'
             code_status.set(inline_code[i] + ' | ' + i, this.status)
         }
-
+        
         return code_status
 
     }
