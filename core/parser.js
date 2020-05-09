@@ -18,7 +18,8 @@ export default class Parser {
         if (typeof this.lexer !== 'object') throw new Error('Lexer content must be an object!')
 
         let   blck_index  = 0,
-              blocks      = []
+              blocks      = [],
+              parse_blcks = new Map()
 
         for (const i of this.lexer) {
             const element    = i[0].split('|').map(x => x.trim()).map(x => x === '' ? x = ' ' : x),
@@ -80,8 +81,8 @@ export default class Parser {
                 }
             }
         }
-
-        return blocks.map(x => x.join(''))
+        blocks.map(x => x.join('')).map(x => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(x, 'BLOCK_CLOSE') : parse_blcks.set(x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(x, 'VARIABLE') : parse_blcks.set(x, 'TEXT'))
+        return parse_blcks
 
     }
 
