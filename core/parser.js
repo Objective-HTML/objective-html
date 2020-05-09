@@ -82,9 +82,13 @@ export default class Parser {
                 }
             }
         }
+        
         blocks.map(x => x.join('')).map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
+
         const blcks_lst = []
+
         for (const i of parse_blcks) {
+
             const element   = i[0].split('_'),
                   index     = element[0],
                   item      = element[1],
@@ -112,6 +116,8 @@ export default class Parser {
                 block     = block.split(' ')[0]
                 blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map })
 
+            } else if (status === 'TEXT' || status === 'VARIABLE') {
+                blcks_lst.push({ block: item, id: index, type: status })
             }
         }
         return blcks_lst
