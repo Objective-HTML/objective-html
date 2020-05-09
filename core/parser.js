@@ -21,6 +21,7 @@ export default class Parser {
               blocks      = [],
               parse_blcks = new Map()
 
+
         for (const i of this.lexer) {
             const element    = i[0].split('|').map(x => x.trim()).map(x => x === '' ? x = ' ' : x),
                   char       = element[0],
@@ -81,7 +82,30 @@ export default class Parser {
                 }
             }
         }
-        blocks.map(x => x.join('')).map(x => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(x, 'BLOCK_CLOSE') : parse_blcks.set(x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(x, 'VARIABLE') : parse_blcks.set(x, 'TEXT'))
+        blocks.map(x => x.join('')).map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
+
+        for (const i of parse_blcks) {
+            const element = i[0].split('_'),
+                  index   = element[0],
+                  item    = element[1],
+                  status  = i[1]
+            
+            if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
+
+                let block = item.slice(1, item.length - 1)
+
+                if (block.startsWith('/')) {
+                    
+                    block = block.slice(1)
+                    
+                } else {
+
+                }
+
+                console.log(block)
+
+            }
+        }
         return parse_blcks
 
     }
