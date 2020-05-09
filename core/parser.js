@@ -83,14 +83,17 @@ export default class Parser {
             }
         }
         blocks.map(x => x.join('')).map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
-
+        const blcks_lst = []
         for (const i of parse_blcks) {
-            const element = i[0].split('_'),
-                  index   = element[0],
-                  item    = element[1],
-                  status  = i[1]
-            let   id      = '',
-                  args    = ''
+            const element   = i[0].split('_'),
+                  index     = element[0],
+                  item      = element[1],
+                  status    = i[1]
+            let   id        = '',
+                  args      = [],
+                  params    = [],
+                  variables = [],
+                  param_map = []
             
             if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
 
@@ -103,13 +106,15 @@ export default class Parser {
                 } else {
                     id    = block.split(' ')[0].toUpperCase() + '_START'
                 }
-                args  = block.split(' ').slice(1).join(' ').trim() || null
-                block = block.split(' ')[0]
-                console.log(block, args, id)
+                args      = block.split(' ').slice(1).join(' ').trim().split(' ') || []
+                args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
+                params.map(x => param_map.push({name: x.split('=')[0], value:x.split('=')[1]}))
+                block     = block.split(' ')[0]
+                blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map })
 
             }
         }
-        return parse_blcks
+        return blcks_lst
 
     }
 
