@@ -81,7 +81,7 @@ export default class Parser {
             }
         }
 
-        console.log(blocks.map(x => x.join('')))
+        return blocks.map(x => x.join(''))
 
     }
 
