@@ -89,20 +89,23 @@ export default class Parser {
                   index   = element[0],
                   item    = element[1],
                   status  = i[1]
+            let   id      = '',
+                  args    = ''
             
             if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
 
                 let block = item.slice(1, item.length - 1)
 
                 if (block.startsWith('/')) {
-                    
                     block = block.slice(1)
+                    id    = block.toUpperCase() + '_END'
                     
                 } else {
-
+                    id    = block.toUpperCase() + '_START'
                 }
-
-                console.log(block)
+                args  = block.split(' ').slice(1).join(' ').trim() || null
+                block = block.split(' ')[0]
+                console.log(block, args, id)
 
             }
         }
