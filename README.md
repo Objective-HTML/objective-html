@@ -46,12 +46,23 @@ The mainly advantage of Objective HTML is that it's easy to learn.
 
 ```html
 <objective>
-	<function name=message argument=msg>	
+	<function name=message msg>	
 		<print>
 			{msg}
 		</print>
 	</function>
 	
 	<message>Hello world</message>
+</objective>
+```
+
+## Comments
+
+```html
+<objective>
+	<!-- Log "Hello world" -->
+	<print>
+		Hello world
+	</print>
 </objective>
 ```
