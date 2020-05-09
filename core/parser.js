@@ -97,11 +97,11 @@ export default class Parser {
                 let block = item.slice(1, item.length - 1)
 
                 if (block.startsWith('/')) {
-                    block = block.slice(1)
+                    block = block.slice(1).split(' ')[0]
                     id    = block.toUpperCase() + '_END'
                     
                 } else {
-                    id    = block.toUpperCase() + '_START'
+                    id    = block.split(' ')[0].toUpperCase() + '_START'
                 }
                 args  = block.split(' ').slice(1).join(' ').trim() || null
                 block = block.split(' ')[0]
