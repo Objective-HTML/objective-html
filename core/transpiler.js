@@ -3,7 +3,8 @@
            Transpiler
 //////////////////////////////*/
 
-import Parser from './parser'
+import Parser     from './parser'
+import Conditions from './tokens/conditions'
 
 export default class Transpiler {
 
@@ -52,10 +53,16 @@ export default class Transpiler {
           code.push('"' + block + '"')
           break
         }
+        
+        case 'RETURN_START': {
+          code.push('return')
+          break
+        }
 
-        case 'DEFINE_END': {
+        case 'DEFINE_END': case 'RETURN_END': {
 
           code.push(';')
+          break
 
         }
         
@@ -74,7 +81,7 @@ export default class Transpiler {
           break
         }
 
-        case 'FUNCTION_END': {
+        case 'FUNCTION_END': case 'IF_END': case 'ELIF_END': case 'ELSE_END': {
           code.push('}')
           break
         }
@@ -82,6 +89,28 @@ export default class Transpiler {
         case 'OBJECTIVE_START': {
           console.log(id)
           break
+        }
+
+        case 'IF_START': case 'ELIF_START': {
+          let condition_args = args.join(' ')
+          for (const arg of args) {
+            console.log(arg)
+            for (const condition in Conditions) {
+              if (arg === condition) {
+                condition_args = condition_args.replace(condition, Conditions[condition])
+              }
+            }
+          }
+          if (type === 'IF_START') code.push('if (' + condition_args +') {')
+          if (type === 'ELIF_START') code.push('else if (' + condition_args +') {')
+          break
+        }
+
+        case 'ELSE_START': {
+
+          code.push('else {')
+          break
+
         }
 
       }
