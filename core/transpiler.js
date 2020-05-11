@@ -56,7 +56,7 @@ export default class Transpiler {
               if (module_name === '') {
                 module_name = module_path.split('/').pop().replace('.html', '.js')
               }
-              if (!module_path.endsWith('.js')) module_path = module_path + '.js'
+              if (!module_path.endsWith('.js') && module_path.startsWith('./')) module_path = module_path + '.js'
               console.log(module_path)
               code.push(`const ${module_name}=require('${module_path}');`)
               modules.push(module_name)

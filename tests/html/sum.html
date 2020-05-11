@@ -1,6 +1,6 @@
 <objective>
   <!-- test -->
-  <import src="./math" name=math></import>
+  <import src="fs" name=fs></import>
   <function name=sum number1 number2>
     <define name="result">
       {number1 + number2}
@@ -15,9 +15,9 @@
     test
    -->
   <print>
-    <math::test 5 4></math::test>
+    <fs::readFileSync math.html UTF-8></fs::test>
   </print>
   <print>
-    <sum 6 8></sum>
+    <sum #6 #8></sum>
   </print>
 </objective>
