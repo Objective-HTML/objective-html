@@ -83,6 +83,20 @@ export default class Transpiler {
             code.push(`for(${for_args.join(';')}){`)
           }
         }
+        else if (type === 'WHILE_START') {
+
+          if (args.length > 0) {
+            let while_args = args.join(' ')
+            for (const arg of while_args) {
+              for (const i in Conditions) {
+                if (while_args.includes(i)) {
+                  while_args = while_args.replace(i, Conditions[i])
+                }
+              }
+            }
+            code.push(`while(${while_args}){`)
+          }
+        }
         else if (type === 'FUNCTION_START') {
           let function_name = new String(),
               function_args = new String()
@@ -200,7 +214,8 @@ export default class Transpiler {
                   type === 'ELSE_END'     || 
                   type === 'ELIF_END'     ||
                   type === 'EXPORT_END'   ||
-                  type === 'FOR_END') {
+                  type === 'FOR_END'      ||
+                  type === 'WHILE_END') {
           
           code.push('}')
           if (type === 'FUNCTION_END') {
