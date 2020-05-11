@@ -13,9 +13,8 @@ export default class Transpiler {
   }
 
   transpile () {
-
-    const code = []
-
+    const code      = [],
+          functions = []
     for (const item of this.parser) {
       const block  = item.block,
             type   = item.type,
@@ -24,100 +23,101 @@ export default class Transpiler {
             params = item.parameters,
             status = type.toLowerCase()
                          .split('_')[1]
-      console.log(type, block)
-      switch (type) {
-
-        case 'COMMENT': {
-
-          code.push(block.replace('<!--', '/*')
-                         .replace('-->', '*/'))
-          break
-          
-        }
-
-        case 'DEFINE_START' : {
-
-          code.push('var ' + item.parameters[0].value + '=')
-          break
-
-        }
-
-        case 'VARIABLE': {
-          
-          code.push(block.replace(/(\{|\})/g, ''))
-          break
-          
-        }
-
-        case 'TEXT': {
-          code.push('"' + block + '"')
-          break
-        }
-        
-        case 'RETURN_START': {
-          code.push('return')
-          break
-        }
-
-        case 'DEFINE_END': case 'RETURN_END': {
-
-          code.push(';')
-          break
-
-        }
-        
-        case 'FUNCTION_START': {
-          let function_args = ''
-          let function_name = ''
-          for (const i of params) {
-            if (i.name) {
-              function_name = i.value
-            }
-          }
-          if (args) {
-            function_args = args.join(',')
-          }
-          code.push('function ' + function_name + '(' + function_args + ') {')
-          break
-        }
-
-        case 'FUNCTION_END': case 'IF_END': case 'ELIF_END': case 'ELSE_END': {
-          code.push('}')
-          break
-        }
-
-        case 'OBJECTIVE_START': {
-          console.log(id)
-          break
-        }
-
-        case 'IF_START': case 'ELIF_START': {
-          let condition_args = args.join(' ')
-          for (const arg of args) {
-            console.log(arg)
-            for (const condition in Conditions) {
-              if (arg === condition) {
-                condition_args = condition_args.replace(condition, Conditions[condition])
+      
+      if (block !== '') {
+        if (type === 'OBJECTIVE_START') {}
+        else if (type === 'OBJECTIVE_END') {}
+        else if (type === 'COMMENT') code.push('/*' + block.replace(/(<!--|-->)/g, '') + '*/')
+        else if (type === 'TEXT') code.push('\'' + block + '\'')
+        else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, ''))
+        else if (type === 'RETURN_START') code.push('return ')
+        else if (type === 'PRINT_START') code.push('console.log(')
+        else if (type === 'PRINT_END') code.push(');')
+        else if (type === 'FUNCTION_START') {
+          let function_name = new String(),
+              function_args = new String()
+          if (params.length > 0) {
+            for (const i of params) {
+              if (i.name === 'name') {
+                function_name = i.value
               }
             }
+            if (function_name) {
+              if (args.length > 0) {
+                function_args = item.args.join(',')
+              }
+              code.push(`function ${function_name}(${function_args}){`)
+              functions.push(function_name)
+            } else {
+              console.log('[!] - Function must have a name.')
+            }
+          } else {
+            console.log('[!] - Function must have a name.')
           }
-          if (type === 'IF_START') code.push('if (' + condition_args +') {')
-          if (type === 'ELIF_START') code.push('else if (' + condition_args +') {')
-          break
+        } else if (type === 'DEFINE_START') {
+          let variable_name = new String()
+          if (params.length > 0) {
+            for (const i of params) {
+              if (i.name === 'name') {
+                variable_name = i.value
+              }
+            }
+            if (variable_name) {
+              code.push(`var ${variable_name}=`)
+            } else {
+              console.log('[!] - Variable must have a name.')
+            }
+          } else {
+            console.log('[!] - Variable must have a name.')
+          }
+        } else if (type === 'IF_START' || type === 'ELSE_START' || type === 'ELIF_START') {
+          let condition_args = args,
+              condition_name = new String()
+
+          if (type === 'IF_START')        condition_name = 'if'
+          else if (type === 'ELSE_START') condition_name = 'else'
+          else if (type === 'ELIF_START') condition_name = 'else if'
+          if (args.length > 0) {
+            for (const i of args) {
+              for (const condition in Conditions) {
+                if (condition === i) {
+                  condition_args[args.indexOf(i)] = Conditions[condition]
+                }
+              }
+            }
+            condition_args = condition_args.join('')
+            code.push(`${condition_name}(${condition_args}){`)
+          }
+        } else if (type === 'IF_END' || 
+                  type === 'FUNCTION_END' || 
+                  type === 'ELSE_END' || 
+                  type === 'ELIF_END') {
+
+          code.push('}')
+
+        } else if (type === 'DEFINE_END' || 
+                  type === 'RETURN_END') {
+          code.push(';')
+        } else {
+          for (const i of functions) {
+            let function_args = args || []
+            if (i === block) {
+              if (type.endsWith('_START')) {
+                if (args.length > 0) {
+                  args = args.map(x => x.includes('{') ? x.replace(/(\{|\})/g, '').split(/\<(.*)/g)[0] : x = '\'' + x + '\'')
+                  function_args = args.join(',')
+                }
+                code.push(`${block}(${function_args});`)
+              }
+              
+            }
+          }
         }
-
-        case 'ELSE_START': {
-
-          code.push('else {')
-          break
-
-        }
-
       }
       
     }
     
-    console.log(code)
+    return code.join('')
 
   }
 
