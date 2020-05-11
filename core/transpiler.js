@@ -57,14 +57,15 @@ export default class Transpiler {
                 module_name = module_path.split('/').pop().replace('.html', '.js')
               }
               if (!module_path.endsWith('.js')) module_path = module_path + '.js'
-              code.push(`import ${module_name} from '${module_path}';`)
+              console.log(module_path)
+              code.push(`const ${module_name}=require('${module_path}');`)
               modules.push(module_name)
             }
           }
         }
 
         else if (type === 'EXPORT_START') {
-          code.push('export default {')
+          code.push('module.exports = {')
           status = 'EXPORT'
         }
         
