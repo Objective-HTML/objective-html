@@ -8,5 +8,8 @@ export default {
     'plus': '+',
     'divide': '/',
     'modulo': '%',
-    'multiply': '*'
+    'multiply': '*',
+    'is': '=',
+    'increment': '++',
+    'decrement': '--'
 }

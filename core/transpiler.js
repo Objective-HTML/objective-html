@@ -68,7 +68,21 @@ export default class Transpiler {
           code.push('module.exports = {')
           status = 'EXPORT'
         }
-        
+        else if (type === 'FOR_START') {
+
+          if (args.length > 0) {
+            let for_args = args.join(' ').split(':').map(x => x.trim())
+            for (const arg of for_args) {
+              for (const i in Conditions) {
+                if (arg.includes(i)) {
+                  for_args[for_args.indexOf(arg)] = arg.replace(i, Conditions[i])
+                }
+              }
+            }
+            for_args[for_args.indexOf(for_args.filter(x => x.match(/\s[=]\s/g)).join(''))] = 'var ' + for_args.filter(x => x.match(/\s[=]\s/g)).join('') 
+            code.push(`for(${for_args.join(';')}){`)
+          }
+        }
         else if (type === 'FUNCTION_START') {
           let function_name = new String(),
               function_args = new String()
@@ -185,7 +199,8 @@ export default class Transpiler {
                   type === 'FUNCTION_END' || 
                   type === 'ELSE_END'     || 
                   type === 'ELIF_END'     ||
-                  type === 'EXPORT_END') {
+                  type === 'EXPORT_END'   ||
+                  type === 'FOR_END') {
           
           code.push('}')
           if (type === 'FUNCTION_END') {

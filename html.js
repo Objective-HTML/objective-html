@@ -49,4 +49,8 @@ export default class Objective {
 
 }
 
+import PATH from 'path'
+const test = new Objective(PATH.resolve(PATH.join(__dirname, 'tests/html')))
+
+test.transpile().then(content => console.log(content))
 
