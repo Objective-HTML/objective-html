@@ -1,1 +1,1 @@
-/* test */const fs=require('fs');function sum(number1,number2){var result=number1 + number2;if(result>0){return result;}}/*test*/console.log(fs.readFileSync('math.html','UTF-8'));console.log(sum(6,8));
+/* Importing Mathematics library */const math=require('./math.js');console.log(math.test(5,4));console.log(math.coucou(''));

@@ -31,9 +31,13 @@ export default class Transpiler {
 
         else if (type === 'COMMENT') code.push('/*' + block.replace(/(<!--|-->)/g, '') + '*/')
 
-        else if (type === 'TEXT') code.push('\'' + block + '\'')
+        else if (type === 'TEXT') {
+          code.push('\'' + block + '\'')
+        }
 
-        else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, ''))
+        else if (type === 'VARIABLE') {
+          code.push(block.replace(/(\{|\})/g, ''))
+        }
 
         else if (type === 'RETURN_START') code.push('return ')
 
@@ -129,7 +133,7 @@ export default class Transpiler {
 
               if (status === 'EXPORT') {
 
-                code.push(`${variable_name}:`)
+                code.push(`${variable_name}: function () { return `)
 
               } else {
 
@@ -199,7 +203,7 @@ export default class Transpiler {
 
           if (type === 'DEFINE_END') {
             if (status === 'EXPORT') {
-              code.push(',')
+              code.push('},')
             } else {
               code.push(';')
             }

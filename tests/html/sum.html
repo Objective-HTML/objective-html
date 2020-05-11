@@ -1,23 +1,11 @@
 <objective>
-  <!-- test -->
-  <import src="fs" name=fs></import>
-  <function name=sum number1 number2>
-    <define name="result">
-      {number1 + number2}
-    </define>
-    <if result higher 0>
-      <return>
-        {result}
-      </return>
-    </if>
-  </function>
-  <!-- 
-    test
-   -->
+  <!-- Importing Mathematics library -->
+  <import src=./math name=math></import>
+
   <print>
-    <fs::readFileSync math.html UTF-8></fs::test>
+    <math::test #5 #4></math::test>
   </print>
   <print>
-    <sum #6 #8></sum>
+    <math::coucou></math::coucou>
   </print>
 </objective>
