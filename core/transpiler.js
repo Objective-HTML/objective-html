@@ -104,7 +104,7 @@ export default class Transpiler {
             if (i === block) {
               if (type.endsWith('_START')) {
                 if (args.length > 0) {
-                  args = args.map(x => x.includes('{') ? x.replace(/(\{|\})/g, '').split(/\<(.*)/g)[0] : x = '\'' + x + '\'')
+                  args = args.map(x => x.startsWith('#') ? x.replace('#', '') : x = '\'' + x + '\'')
                   function_args = args.join(',')
                 }
                 code.push(`${block}(${function_args});`)
@@ -116,7 +116,6 @@ export default class Transpiler {
       }
       
     }
-    
     return code.join('')
 
   }
