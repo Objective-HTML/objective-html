@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node html.js",
+    "nodemon": "nodemon --exec babel-node html.js",
+    "start": "babel-node html.js",
     "test": "./node_modules/.bin/mocha ./tests/ --require @babel/register --watch"
   },
   "repository": {

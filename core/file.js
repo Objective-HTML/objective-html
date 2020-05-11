@@ -4,22 +4,42 @@
 //////////////////////////////*/
 
 import FS from 'fs'
+import PATH from 'path'
 
 export default class File {
 
-     constructor (file) {
-          this.file =  file
+     constructor (dir) {
+          this.dir = dir
      }
 
-     read () {
-
-          return new Promise ((resolve, reject) => {
-               FS.readFile(this.file, 'UTF-8', (error, content) => {
-                    if (error) reject(new Error(error))
-                    resolve(content)
-               })
+     filewalker (done) {
+          let results = []
+      
+          FS.readdir(this.dir, (err, list) => {
+              if (err) return done(err)
+      
+              var pending = list.length
+      
+              if (!pending) return done(null, results)
+      
+              list.forEach(file => {
+                  file = PATH.resolve(this.dir, file)
+      
+                  FS.stat(file, (err, stat) => {
+                      if (stat && stat.isDirectory()) {
+                          results.push(file)
+                          this.filewalker(file, (err, res) => {
+                              results = results.concat(res)
+                              if (!--pending) done(null, results)
+                          })
+                      } else {
+                          results.push(file)
+      
+                          if (!--pending) done(null, results)
+                      }
+                  })
+              })
           })
-
-     }
+      }
 
 }
