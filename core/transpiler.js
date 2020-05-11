@@ -31,13 +31,9 @@ export default class Transpiler {
 
         else if (type === 'COMMENT') code.push('/*' + block.replace(/(<!--|-->)/g, '') + '*/')
 
-        else if (type === 'TEXT') {
-          code.push('\'' + block + '\'')
-        }
+        else if (type === 'TEXT') code.push('\'' + block + '\'')
 
-        else if (type === 'VARIABLE') {
-          code.push(block.replace(/(\{|\})/g, ''))
-        }
+        else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, '').replace('::', '.'))
 
         else if (type === 'RETURN_START') code.push('return ')
 
