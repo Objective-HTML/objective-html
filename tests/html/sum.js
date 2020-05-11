@@ -1,1 +1,0 @@
-/* Importing Mathematics library */const math=require('./math.js');console.log(math.test(5,4));console.log(math.coucou);var name='User';console.log('Hello' + name);

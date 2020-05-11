@@ -18,7 +18,7 @@ export default class File {
           FS.readdir(this.dir, (err, list) => {
               if (err) return done(err)
       
-              var pending = list.length
+              let pending = list.length
       
               if (!pending) return done(null, results)
       
