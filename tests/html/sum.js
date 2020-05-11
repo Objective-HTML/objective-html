@@ -1,1 +1,1 @@
-/* Importing Mathematics library */const math=require('./math.js');console.log(math.test(5,4));console.log(math.coucou(''));
+/* Importing Mathematics library */const math=require('./math.js');console.log(math.test(5,4));console.log(math.coucou);

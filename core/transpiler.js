@@ -129,7 +129,7 @@ export default class Transpiler {
 
               if (status === 'EXPORT') {
 
-                code.push(`${variable_name}: function () { return `)
+                code.push(`${variable_name}:`)
 
               } else {
 
@@ -199,7 +199,7 @@ export default class Transpiler {
 
           if (type === 'DEFINE_END') {
             if (status === 'EXPORT') {
-              code.push('},')
+              code.push(',')
             } else {
               code.push(';')
             }
@@ -213,7 +213,7 @@ export default class Transpiler {
             let function_args = args || []
             if (block.startsWith(i)) {
               if (type.endsWith('_START')) {
-
+                console.log(item)
                 if (args.length > 0) {
 
                   args = args.map(x => x.startsWith('#') ? x.replace('#', '') : '\'' + x + '\'')
