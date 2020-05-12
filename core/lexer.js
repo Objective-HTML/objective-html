@@ -30,7 +30,8 @@ export default class Lexer {
             if (this.status === 'BLOCK_START') this.status = 'BLOCK_CONTENT'
             if ((this.status !== 'BLOCK_CONTENT' || this.status !==  'BLOCK_START') && inline_code[i] === '<') this.status = 'BLOCK_START'
             if (this.status === 'BLOCK_CONTENT' && inline_code[i] === '>') this.status = 'BLOCK_END'
-            if ((this.status === 'BLOCK_VALUE') && inline_code[i] === '{') this.status = 'BLOCK_VARIABLE'
+            if (this.status === 'BLOCK_VALUE' && inline_code[i] !== '{') this.status = 'BLOCK_TEXT'
+            if ((this.status === 'BLOCK_VALUE' && this.status !== 'BLOCK_TEXT') && inline_code[i] === '{') this.status = 'BLOCK_VARIABLE'
             if (this.status === 'BLOCK_VARIABLE' && inline_code[i] === '}' ) this.status = 'BLOCK_VARIABLE_END'
             code_status.set(inline_code[i] + ' | ' + i, this.status)
         }

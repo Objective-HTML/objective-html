@@ -32,7 +32,13 @@ export default class Transpiler {
 
         else if (type === 'COMMENT') code.push('/*' + block.replace(/(<!--|-->)/g, '') + '*/')
 
-        else if (type === 'TEXT') code.push('\'' + block + '\'')
+        else if (type === 'TEXT') {
+          if (block.match(/\{(.*)\}/g)) {
+            code.push('`' + block.replace(/\{/g, '${') + '`')
+          } else {
+            code.push('\'' + block + '\'')
+          }
+        }
 
         else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, '').replace('::', '.'))
 

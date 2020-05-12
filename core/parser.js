@@ -14,7 +14,6 @@ export default class Parser {
     }
 
     parse () {
-
         if (typeof this.lexer !== 'object') throw new Error('Lexer content must be an object!')
 
         let   blck_index  = 0,
@@ -44,21 +43,21 @@ export default class Parser {
                     break
                 }
                 
-                case 'BLOCK_VALUE': {
-                    if (this.status === 'BLOCK_VALUE') {
+                case 'BLOCK_TEXT': {
+                    if (this.status === 'BLOCK_TEXT') {
                         blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_VALUE'
+                        this.status = 'BLOCK_TEXT'
 
                     } else if (this.status === 'BLOCK_END') {
                         ++blck_index
                         blocks.push([])
                         blocks[blck_index - 1] = []
                         blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_VALUE'
+                        this.status = 'BLOCK_TEXT'
                     }
                     break
                 }
-                
+
                 case 'BLOCK_VARIABLE': {
                     if (this.status === 'BLOCK_VARIABLE') {
                         blocks[blck_index - 1].push(char)
@@ -155,7 +154,7 @@ export default class Parser {
 
             }
         }
-
+        console.log(blcks_lst)
         return blcks_lst
 
     }
