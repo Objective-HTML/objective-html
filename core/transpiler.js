@@ -51,20 +51,32 @@ export default class Transpiler {
         else if (type === 'IMPORT_START') {
           blck = true
           let module_path = '',
-              module_name = ''
+              module_name = '',
+              module_type = ''
           if (params.length > 0) {
             for (const i of params) {
               if (i.name === 'src') {
                 module_path = i.value
               } else if (i.name === 'name') {
                 module_name = i.value
+              } else if (i.name === 'as') {
+                if (i.value === 'js' || i.value === 'lib') {
+                  module_type = i.value
+                }
               }
             }
             if (module_path) {
               if (module_name === '') {
-                module_name = module_path.split('/').pop().replace('.html', '.js')
+                if (module_type !== '') {
+                  if (module_type === 'js') {
+                    module_name = module_path.split('/').pop().replace('.html', '.js')
+                    module_path = module_path.replace('./', '')
+                  }
+                } else {
+                  module_name = module_path.split('/').pop().replace('.html', '.js')
+                }
               }
-              if (!module_path.endsWith('.js') && module_path.startsWith('./')) module_path = module_path + '.js'
+              if (!module_path.endsWith('.js') && module_type === '') module_path = './' + module_path + '.js'
               console.log(module_path)
               code.push(`const ${module_name}=require('${module_path}');`)
               modules.push(module_name)

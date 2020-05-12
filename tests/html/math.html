@@ -1,12 +1,6 @@
 <objective>
-    <export>
-        <function name=test arg1 arg2>
-            <return>
-                {arg1 * arg2}
-            </return>
-        </function>
-        <define name=coucou>
-            hello
-        </define>
-    </export>
+    <import src=fs as=js></import>
+    <print>
+        <fs::readFileSync sum.html UTF-8></fs::readFileSync>
+    </print>
 </objective>

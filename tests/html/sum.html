@@ -1,8 +1,10 @@
 <objective>
-  <define name=username>
-    Ness
-  </define>
-  <print>
-    Hello {username}
-  </print>
+  <!-- Message printing -->
+  <export>
+    <function name=message msg>
+      <print>
+        Hello {msg}
+      </print>
+    </function>
+  </export>
 </objective>
