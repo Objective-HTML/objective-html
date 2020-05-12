@@ -246,19 +246,28 @@ export default class Transpiler {
 
           for (const i of modules) {
             blck = true
-            let function_args = args || []
+            let function_args = []
             if (block.startsWith(i)) {
               if (type.endsWith('_START')) {
-                console.log(item)
-                if (args.length > 0) {
-
-                  args = args.map(x => x.startsWith('{') && x.endsWith('}') ?x =  x.replace('{', '').replace('}', '') : x = '\'' + x + '\'')
-                  function_args = args.join(',')
-
+                if (item.all.length > 0) {
+                  for (const all_item of item.all) {
+                    if (all_item.includes('=')) {
+                      if (all_item.split('=')[0] === 'var') {
+                        function_args.push(all_item.split('=')[1])
+                      }
+                    } else {
+                      if (all_item.startsWith('{') && all_item.endsWith('}')) {
+                        function_args.push(all_item.slice(1, all_item.length - 1))
+                      } else {
+                        function_args.push('\'' + all_item + '\'')
+                      }
+                    }
+                    
+                  }
                 }
 
+                function_args = function_args.join(',')
                 code.push(`${i}.${block.split('::')[1]}(${function_args})`)
-
 
               }
             }
@@ -277,6 +286,8 @@ export default class Transpiler {
                   args = args.map(x => x.startsWith('{') && x.endsWith('}') ?x =  x.replace(/(\{|\})/, '') : x = '\'' + x + '\'')
                   function_args = args.join(',')
 
+                } else if (params.length > 0) {
+                  console.log(params)
                 }
 
                 code.push(`${block}(${function_args})`)

@@ -105,7 +105,8 @@ export default class Parser {
                   params    = [],
                   variables = [],
                   param_map = [],
-                  block     = ''
+                  block     = '',
+                  all       = []
             if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
 
                 if (item.includes('<!--') && item.includes('-->')) {
@@ -136,12 +137,13 @@ export default class Parser {
                                      .trim()
                                      .split(' ') || []
                     args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
+                    args.map(x => all.push(x))
                     params.map(x => param_map.push({name: x.split('=')[0], value: x.split('=')[1]
                                                                                    .replace(/\"|\'/g, '')}))
                     block     = block.split(' ')[0]
                 }
 
-                blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map })
+                blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map, all: all })
 
             } else if (status === 'TEXT' || status === 'VARIABLE') {
 
