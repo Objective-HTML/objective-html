@@ -113,7 +113,7 @@ The mainly advantage of Objective HTML is that it's easy to learn.
 	<define name=number>
 		{1}
 	</define>
-	<test #number #5></test>
+	<test {number} {5}></test>
 </objective>
 ```
 
@@ -142,7 +142,7 @@ The mainly advantage of Objective HTML is that it's easy to learn.
 	<!-- Importing Mathematics library -->
 	<import  src=./math  name=math></import>
 	<print>
-		<math::test  #5  #4></math::test>
+		<math::test {5} {4}></math::test>
 	</print>
 	<print>
 		{math::coucou}
