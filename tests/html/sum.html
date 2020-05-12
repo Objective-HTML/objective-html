@@ -3,26 +3,6 @@
   <import src=./math name=math></import>
 
   <print>
-    <math::test #5 #4></math::test>
+    <math::test {test} coucou {123}></math::test>
   </print>
-  <print>
-    {math::coucou}
-  </print>
-</objective>
-
-<objective>
-	<for i is 0 : i equals 5 : i increment >
-    <print>
-      {i}
-    </print>
-  </for>
-  <define name=test>
-    {0}
-  </define>
-  <while test lower 10>
-    <print>
-      {test}
-    </print>
-    {test++}
-  </while>
 </objective>

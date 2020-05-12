@@ -18,7 +18,8 @@ export default class Transpiler {
     const code      = [],
           functions = [],
           modules   = []
-    let   status = 'NONE'
+    let   status = 'NONE',
+          blck   = false
     for (const item of this.parser) {
       const block  = item.block,
             type   = item.type,
@@ -42,6 +43,7 @@ export default class Transpiler {
         else if (type === 'PRINT_END') code.push(');')
 
         else if (type === 'IMPORT_START') {
+          blck = true
           let module_path = '',
               module_name = ''
           if (params.length > 0) {
@@ -67,8 +69,7 @@ export default class Transpiler {
         else if (type === 'EXPORT_START') {
           code.push('module.exports = {')
           status = 'EXPORT'
-        }
-        else if (type === 'FOR_START') {
+        } else if (type === 'FOR_START') {
 
           if (args.length > 0) {
             let for_args = args.join(' ').split(':').map(x => x.trim())
@@ -81,9 +82,9 @@ export default class Transpiler {
             }
             for_args[for_args.indexOf(for_args.filter(x => x.match(/\s[=]\s/g)).join(''))] = 'var ' + for_args.filter(x => x.match(/\s[=]\s/g)).join('') 
             code.push(`for(${for_args.join(';')}){`)
+            blck = true
           }
-        }
-        else if (type === 'WHILE_START') {
+        } else if (type === 'WHILE_START') {
 
           if (args.length > 0) {
             let while_args = args.join(' ')
@@ -95,9 +96,9 @@ export default class Transpiler {
               }
             }
             code.push(`while(${while_args}){`)
+            blck = true
           }
-        }
-        else if (type === 'FUNCTION_START') {
+        } else if (type === 'FUNCTION_START') {
           let function_name = new String(),
               function_args = new String()
           if (params.length > 0) {
@@ -125,6 +126,7 @@ export default class Transpiler {
               } else {
                 code.push(`function ${function_name}(${function_args}){`)
               }
+              blck = true
               functions.push(function_name)
 
             } else {
@@ -206,6 +208,7 @@ export default class Transpiler {
 
             condition_args = condition_args.join('')
             code.push(`${condition_name}(${condition_args}){`)
+            blck = true
 
           }
 
@@ -221,6 +224,7 @@ export default class Transpiler {
           if (type === 'FUNCTION_END') {
             if (status === 'EXPORT') {
               code.push(',')
+              blck = false
             }
           }
 
@@ -236,17 +240,19 @@ export default class Transpiler {
           } else {
             code.push(';')
           }
+          blck = false
 
         } else {
 
           for (const i of modules) {
+            blck = true
             let function_args = args || []
             if (block.startsWith(i)) {
               if (type.endsWith('_START')) {
                 console.log(item)
                 if (args.length > 0) {
 
-                  args = args.map(x => x.startsWith('#') ? x.replace('#', '') : '\'' + x + '\'')
+                  args = args.map(x => x.startsWith('{') && x.endsWith('}') ?x =  x.replace('{', '').replace('}', '') : x = '\'' + x + '\'')
                   function_args = args.join(',')
 
                 }
@@ -268,7 +274,7 @@ export default class Transpiler {
 
                 if (args.length > 0) {
 
-                  args = args.map(x => x.startsWith('#') ? x.replace('#', '') : '\'' + x + '\'')
+                  args = args.map(x => x.startsWith('{') && x.endsWith('}') ?x =  x.replace(/(\{|\})/, '') : x = '\'' + x + '\'')
                   function_args = args.join(',')
 
                 }

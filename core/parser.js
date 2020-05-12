@@ -73,6 +73,10 @@ export default class Parser {
                     }
                     break
                 }
+                case 'BLOCK_VARIABLE_END': {
+                    blocks[blck_index - 1].push(char)
+                    break
+                } 
 
                 case 'BLOCK_END': {
                     if (this.status === 'BLOCK_CONTENT' || this.status === 'BLOCK_START') {
