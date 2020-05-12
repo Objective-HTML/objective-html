@@ -83,7 +83,26 @@ export default class Transpiler {
             }
           }
         }
-
+        else if (type === 'UPDATE_START') {
+          console.log(item)
+          let stats = false
+          if (params.length > 0) {
+            for (const i of params) {
+              if (i.name === 'name') {
+                const elements = code.filter(x => x.includes(`${i.value}=`))
+                for (const element of elements) {
+                  if (element.includes('const') || element.includes('let')) {
+                    code[code.indexOf(code.filter(x => x.includes(`${i.value}=`))[0])] = 'let ' + i.name + '='  
+                    stats = true
+                  }
+                }
+                if (stats) {
+                  code.push(`${i.value}=`)
+                }
+              }
+            }
+          }
+        }
         else if (type === 'EXPORT_START') {
           code.push('module.exports = {')
           status = 'EXPORT'
@@ -181,7 +200,7 @@ export default class Transpiler {
 
               } else {
 
-                code.push(`var ${variable_name}=`)
+                code.push(`const ${variable_name}=`)
 
               }
 
@@ -247,7 +266,8 @@ export default class Transpiler {
           }
 
         } else if (type === 'DEFINE_END' || 
-                   type === 'RETURN_END') {
+                   type === 'RETURN_END' ||
+                   type === 'UPDATE_END') {
 
           if (type === 'DEFINE_END') {
             if (status === 'EXPORT') {

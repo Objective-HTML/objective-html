@@ -154,7 +154,6 @@ export default class Parser {
 
             }
         }
-        console.log(blcks_lst)
         return blcks_lst
 
     }

@@ -1,6 +1,14 @@
 <objective>
-    <import src=fs as=js></import>
     <print>
-        <fs::readFileSync sum.html UTF-8></fs::readFileSync>
+        Bonjour {username}
+    </print>
+    <define name=username>
+        Ness
+    </define>
+    <print> 
+        Bonjour {username} {username}
+    </print>
+    <print>
+        Bonjour {username}
     </print>
 </objective>
