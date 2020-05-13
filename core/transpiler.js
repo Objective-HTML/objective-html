@@ -29,6 +29,7 @@ export default class Transpiler {
     let   export_stat = false
     
     for (const parsed of this.parser) {
+      let previous_block = ''
       for (const i of parsed) {
         const block  = i.block      || new String(''),
               id     = i.id         || new Number(0),
@@ -36,8 +37,18 @@ export default class Transpiler {
               args   = i.args       || new Array(),
               params = i.parameters || new Array(),
               all    = i.all        || new Array()
-        if (type === 'TEXT') block.match(/\{(.*)\}/g) ? code.push('`' +block.replace(/\{/g, '${') + '`') : code.push('\'' + block + '\'')
-        else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, ''))
+        if (type === 'TEXT') {
+          if (block.match(/\{(.*)\}/g)) {
+            code.push('`' +block.replace(/\{/g, '${') + '`')
+          } else {
+            code.push('\'' + block + '\'')
+          }
+        }
+        else if (type === 'VARIABLE') {
+          const block_var = block.replace(/(\{|\})/g, '')
+          if (block_var.replace(/ {2}/g, '').includes(' ')) code.push('[' + block_var.replace(/ {2}/g, '').replace(/ /g, ',') + ']')
+          else code.push(block_var)
+        }
         else if (type === 'COMMENT') code.push(block.replace('<!--', '/*').replace('-->', '*/'))
         else if (type.endsWith('_START')) {
           
@@ -104,17 +115,25 @@ export default class Transpiler {
             if (NAME) {
   
               if (export_stat) {
-                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join(', ') : ''})`)
+                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join(', ') : ''}){`)
                 this.functions.set(NAME, this.filename[this.parser.indexOf(parsed)])
               }
               else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join(', ') : ''}){`)
             }
-          } else {
+          }
+          else {
             for (const func of this.functions) {
               for (const mod of this.modules) {
                 if (func[1] === mod[0]) {
-                  const func_args = args.map(x => x.startsWith('{') && x.endsWith('}') ? x = x.replace(/(\{|\})/g, '') : x = '\'' + x + '\'')
-                  code.push(`${mod[1]}.${block}(${func_args.length > 0 ? func_args.join(', ') : ''})`,)
+                  if (func[0] === block) {
+                    if (parsed[parsed.indexOf(i) + 1].type === 'TEXT' || parsed[parsed.indexOf(i) + 1].type === 'VARIABLE') {
+                      code.push(`${mod[1]}.${block}(`)
+                    } else {
+                      const func_args = args.map(x => x.startsWith('{') && x.endsWith('}') ? x = x.replace(/(\{|\})/g, '') : x = '\'' + x + '\'')
+                      code.push(`${mod[1]}.${block}(${func_args.length > 0 ? func_args.join(', ') : ''}`)
+                    }
+                    
+                  }
                 }
               }
             }
@@ -135,6 +154,9 @@ export default class Transpiler {
             if (export_stat) code.push(',')
             else code.push(';')
   
+          } else if (block === 'print') {
+
+            code.push(')')
           }
   
         }

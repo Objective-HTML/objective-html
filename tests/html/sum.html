@@ -1,14 +1,10 @@
 <objective>
   <!-- Message printing -->
-  <import src=test></import>
   <export>
-    <define name=coucou>
-      test
-    </define>
-    <function name=message msg>
-      <print>
-        Hello {msg}
-      </print>
+    <function name=print message>
+      <return>
+        {console.log(message)}
+      </return>
     </function>
   </export>
 </objective>
