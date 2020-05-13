@@ -16,16 +16,20 @@ export default class Transpiler {
 
   transpile () {
     
-    const code = []
+    const code        = [],
+          variables   = []
+    let   export_stat = false
     for (const i of this.parser) {
-      const block       = i.block      || new String(''),
-            id          = i.id         || new Number(0),
-            type        = i.type       || new String(''),
-            args        = i.type       || new Array(),
-            params      = i.parameters || new Array(),
-            all         = i.all        || new Array()
-      let   export_stat = false
-      if (type.endsWith('_START')) {
+      const block  = i.block      || new String(''),
+            id     = i.id         || new Number(0),
+            type   = i.type       || new String(''),
+            args   = i.type       || new Array(),
+            params = i.parameters || new Array(),
+            all    = i.all        || new Array()
+      if (type === 'TEXT') block.match(/\{(.*)\}/g) ? code.push('`' +block.replace(/\{/g, '${') + '`') : code.push('\'' + block + '\'')
+      else if (type === 'VARIABLE') code.push(block.replace(/(\{|\})/g, ''))
+      else if (type === 'COMMENT') code.push(block.replace('<!--', '/*').replace('-->', '*/'))
+      else if (type.endsWith('_START')) {
         
         if (block === 'import') {
           let SRC  = undefined,
@@ -54,6 +58,25 @@ export default class Transpiler {
           code.push(`module.exports={`)
           export_stat = true
 
+        } else if (block === 'define') {
+          let NAME = undefined,
+              KWRD = ''
+          for (const param of params) {
+            if (param.name === 'name') {
+              if (!variables.includes(param.value)) {
+                variables.push(param.value)
+                KWRD = 'const'
+              } else {
+                if (export_stat) code[code.indexOf(code.filter(x => x.includes(param.value))[0])] = `${param.value}:`
+                else code[code.indexOf(code.filter(x => x.includes(param.value))[0])] = `let ${param.value}=`
+              }
+              NAME = param.value
+            }
+          }
+          if (NAME) {
+            if (export_stat) code.push(`${NAME}:`.trim())
+            else code.push(`${KWRD} ${NAME}=`.trim())
+          }
         }
       } else if (type.endsWith('_END')) {
 
@@ -61,15 +84,22 @@ export default class Transpiler {
           code.push(';')
         }
 
-        if (block === 'export') {
+        else if (block === 'export') {
           code.push('};')
           export_stat = false
+        }
+
+        else if (block === 'define') {
+
+          if (export_stat) code.push(',')
+          else code.push(';')
+
         }
 
       }
     }
 
-    return code.join('')
+    return code
   }
 
 }
