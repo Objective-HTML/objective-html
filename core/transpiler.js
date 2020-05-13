@@ -154,14 +154,27 @@ export default class Transpiler {
             if (export_stat) code.push(',')
             else code.push(';')
   
-          } else if (block === 'print') {
+          }
+          else if (block === 'function') {
+  
+            if (export_stat) code.push('},')
+            else code.push(');')
 
-            code.push(')')
+          } else {
+            for (const func of this.functions) {
+              for (const mod of this.modules) {
+                if (func[1] === mod[0]) {
+                  if (func[0] === block) {
+                    code.push(');') 
+                  }
+                }
+              }
+            }
           }
   
         }
       }
-      all.set(this.filename[this.parser.indexOf(parsed)], code)
+      all.set(this.filename[this.parser.indexOf(parsed)], code.join(''))
       code = []
     }
 

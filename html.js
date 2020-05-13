@@ -8,6 +8,7 @@ import FS         from 'fs'
 import path       from 'path'
 import Parser     from './core/parser'
 const test = []
+
 function readFile (file) {
      const content = FS.readFileSync(path.resolve(path.join(__dirname, file)), 'UTF-8')
      test.push(file)
@@ -24,4 +25,8 @@ function readFile (file) {
 
 readFile('tests/html/math.html')
 
-console.log(new Transpiler(test.reverse()).transpile())
+const files = new Transpiler(test.reverse()).transpile()
+
+for (const file of files) {
+     FS.writeFileSync(path.resolve(path.join(file[0].replace('.html', '.js'))), file[1])
+}
