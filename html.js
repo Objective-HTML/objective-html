@@ -7,26 +7,29 @@ import Transpiler from './core/transpiler'
 import FS         from 'fs'
 import path       from 'path'
 import Parser     from './core/parser'
+import Lexer      from './core/lexer'
 const test = []
 
-function readFile (file) {
-     const content = FS.readFileSync(path.resolve(path.join(__dirname, file)), 'UTF-8')
-     test.push(file)
-     for (const item of new Parser(content).parse()) {
-          if (item.type.endsWith('_START') && item.block === 'import') {
-               for (const param of item.parameters) {
-                    if (param.name === 'src') {
-                         readFile(path.dirname(file) + '/' + param.value + '.html')
-                    }
-               }
-          }
-     }
-}
+console.log(new Parser(FS.readFileSync('./tests/html/math.html', 'UTF-8')).parse())
 
-readFile('tests/html/math.html')
+// function readFile (file) {
+//      const content = FS.readFileSync(path.resolve(path.join(__dirname, file)), 'UTF-8')
+//      test.push(file)
+//      for (const item of new Parser(content).parse()) {
+//           if (item.type.endsWith('_START') && item.block === 'import') {
+//                for (const param of item.parameters) {
+//                     if (param.name === 'src') {
+//                          readFile(path.dirname(file) + '/' + param.value + '.html')
+//                     }
+//                }
+//           }
+//      }
+// }
 
-const files = new Transpiler(test.reverse()).transpile()
+// readFile('tests/html/math.html')
 
-for (const file of files) {
-     FS.writeFileSync(path.resolve(path.join(file[0].replace('.html', '.js'))), file[1])
-}
+// const files = new Transpiler(test.reverse()).transpile()
+
+// for (const file of files) {
+//      FS.writeFileSync(path.resolve(path.join(file[0].replace('.html', '.js'))), file[1])
+// }

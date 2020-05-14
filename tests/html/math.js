@@ -1,1 +1,0 @@
-const sum=require('./sum.js');sum.print('test');const coucou='test';

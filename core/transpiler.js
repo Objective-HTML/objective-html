@@ -7,6 +7,7 @@ import Parser     from './parser'
 import Conditions from './tokens/conditions'
 import FS         from 'fs'
 import PATH       from 'path'
+
 export default class Transpiler {
 
   constructor (content = '', filename = '') {
@@ -129,8 +130,8 @@ export default class Transpiler {
                     if (parsed[parsed.indexOf(i) + 1].type === 'TEXT' || parsed[parsed.indexOf(i) + 1].type === 'VARIABLE') {
                       code.push(`${mod[1]}.${block}(`)
                     } else {
-                      const func_args = args.map(x => x.startsWith('{') && x.endsWith('}') ? x = x.replace(/(\{|\})/g, '') : x = '\'' + x + '\'')
-                      code.push(`${mod[1]}.${block}(${func_args.length > 0 ? func_args.join(', ') : ''}`)
+                      console.log(all)
+                      // code.push(`${mod[1]}.${block}(${func_args.length > 0 ? func_args.join(', ') : ''}`)
                     }
                     
                   }
