@@ -16,145 +16,123 @@ export default class Parser {
     parse () {
         if (typeof this.lexer !== 'object') throw new Error('Lexer content must be an object!')
 
-        let   blck_index  = 0,
+        let   blck_index  = -1,
               blocks      = [],
+              cur_block   = [],
               parse_blcks = new Map()
+        let iterator = -1
+        for (const item of this.lexer) {
+            const elements = item[0].split(' | '),
+                  letter   = elements[0],
+                  index    = elements[1],
+                  status   = item[1]
 
+            if (status === 'BLOCK_START') {
+                ++blck_index
+                cur_block.push(letter)
+            } 
+            else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
+            else if (status === 'BLOCK_END') {
+                cur_block.push(letter)
+                blocks.push(cur_block.join(''))
+                cur_block = []
+            } else if (status === 'BLOCK_VALUE') {
+                if (this.lexer.get(Array.from(this.lexer.keys())[iterator - 1]) !== 'BLOCK_VALUE') {
+                    ++blck_index
+                    cur_block.push(letter)
+                } else if (this.lexer.get(Array.from(this.lexer.keys())[iterator + 2]) === 'BLOCK_START'){
+                    cur_block.push(letter)
+                    blocks.push(cur_block.join(''))
+                    cur_block = []
+                } else cur_block.push(letter)
 
-        for (const i of this.lexer) {
-            const element    = i[0].split('|')
-                                   .map(x => x.trim())
-                                   .map(x => x === '' ? x = ' ' : x),
-                  char       = element[0],
-                  content    = i[1]
-            switch (content) {
-                case 'BLOCK_START': {
-                    blocks.push([])
-                    blocks[blck_index].push(char)
-                    this.status = 'BLOCK_START'
-                    break
-                }
+            }
 
-                case 'BLOCK_CONTENT': {
-                    if (this.status === 'BLOCK_START' || this.status === 'BLOCK_CONTENT') {
-                        blocks[blck_index].push(char)
-                        this.status = 'BLOCK_CONTENT'
-                    }
-                    break
-                }
+            ++iterator
+
+        }
+        
+        for (const i of blocks) {
+
+            if (i.trim()
+                 .startsWith('<') && 
+                i.trim()
+                 .endsWith('>')) {
+
+                let block_infos = new Map()
+
+                if (i.slice(1, i.length - 1)
+                     .trim()
+                     .startsWith('/')) 
+                     block_infos.set(i.slice(1, i.length - 1)
+                                      .split(' ')
+                                      .slice(0, 1)[0]
+                                      .slice(1), 'END')
+
+                else if (i.slice(1, i.length - 1)
+                          .trim()
+                          .endsWith('/')) 
+                          block_infos.set(i.slice(1, i.length - 1)
+                                           .split(' ')
+                                           .slice(0, 1)[0]
+                                           .endsWith('/') 
+                                           ? i.slice(1, i.length - 1)
+                                              .split(' ')
+                                              .slice(0, 1)[0]
+                                              .split('/')
+                                              .join('') 
+                                           : i.slice(1, i.length - 1)
+                                              .split(' ')
+                                              .slice(0, 1)[0], 'INLINE')
+
+                else block_infos.set(i.slice(1, i.length - 1)
+                                      .split(' ')
+                                      .slice(0, 1)[0], 'START')
+
+                let status        = 'NONE',
+                    block_content = []
+
+                i.slice(1, i.length - 1).trim().split('').forEach(char => {
+
+                    if (status === 'STRING_END') status = 'NONE'
+                    if (status === 'NONE' && char === ' ') char = '%%%'
+                    if ((status === 'STRING_CONTENT' || 
+                         status === 'STRING_CONTENT') && char === '"') status = 'STRING_END'
+                    else if (status === 'STRING_START' || 
+                             status === 'STRING_CONTENT') status = 'STRING_CONTENT'
+                    else if (char === '"' && status !== 'STRING_CONTENT') status = 'STRING_START'
+
+                    block_content.push(char)
+
+                })
+
+                const all = block_content.join('')
+                                         .split('%%%')
+                                         .slice(1)
+                                         
+                console.log({
+                    block  : Array.from(block_infos.keys())[0],
+                    id     : blocks.indexOf(i),
+                    type   : Array.from(block_infos.values())[0],
+                    params : all.filter(x => x.includes('='))
+                               .map(x => x = {
+                                   name: x.split('=')[0], 
+                                   value: x.split('=')[1]
+                                }),
+                    args   : all.filter(x => !x.includes('=')),
+                    all    : all
+                })
                 
-                case 'BLOCK_TEXT': {
-                    if (this.status === 'BLOCK_TEXT') {
-                        blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_TEXT'
-
-                    } else if (this.status === 'BLOCK_END') {
-                        ++blck_index
-                        blocks.push([])
-                        blocks[blck_index - 1] = []
-                        blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_TEXT'
-                    }
-                    break
-                }
-
-                case 'BLOCK_VARIABLE': {
-                    if (this.status === 'BLOCK_VARIABLE') {
-                        blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_VARIABLE'
-
-                    } else if (this.status === 'BLOCK_END') {
-                        ++blck_index
-                        blocks.push([])
-                        blocks[blck_index - 1] = []
-                        blocks[blck_index - 1].push(char)
-                        this.status = 'BLOCK_VARIABLE'
-                    }
-                    break
-                }
-                case 'BLOCK_VARIABLE_END': {
-                    blocks[blck_index - 1].push(char)
-                    break
-                } 
-
-                case 'BLOCK_END': {
-                    if (this.status === 'BLOCK_CONTENT' || this.status === 'BLOCK_START') {
-                        blocks[blck_index].push(char)
-                        this.status = 'BLOCK_END'
-                        ++blck_index
-                    }
-                    break
-                }
+            } else {
+                console.log({
+                    block : i,
+                    id    : blocks.indexOf(i),
+                    type  : 'TEXT'
+                })
             }
         }
         
-        blocks.map(x => x.join(''))
-              .map((x, index) => x.startsWith('<') && x.endsWith('>') ? x[1] == '/' ?  parse_blcks.set(index + '_' + x, 'BLOCK_CLOSE') : parse_blcks.set(index + '_' + x, 'BLOCK_OPEN') : x.startsWith('{') && x.endsWith('}') ? parse_blcks.set(index + '_' + x, 'VARIABLE') : parse_blcks.set(index + '_' + x, 'TEXT'))
-
-        const blcks_lst = []
-
-        for (const i of parse_blcks) {
-
-            const element   = i[0].split('_'),
-                  index     = parseInt(element[0]),
-                  item      = element[1],
-                  status    = i[1]
-            let   id        = '',
-                  args      = [],
-                  params    = [],
-                  variables = [],
-                  param_map = [],
-                  block     = '',
-                  all       = []
-            if (status === 'BLOCK_OPEN' || status === 'BLOCK_CLOSE') {
-
-                if (item.includes('<!--') && item.includes('-->')) {
-
-                    block = item
-                    id    = 'COMMENT'
-
-                } else {
-
-                    block = item.slice(1, item.length - 1)
-
-                    if (block.startsWith('/')) {
-
-                        block = block.slice(1)
-                                     .split(' ')[0]
-                        id    = block.toUpperCase() + '_END'
-                        
-                    } else {
-
-                        id    = block.split(' ')[0]
-                                     .toUpperCase() + '_START'
-
-                    }
-
-                    args      = block.split(' ')
-                                     .slice(1)
-                                     .join(' ')
-                                     .trim()
-                                     .split(' ') || []
-                    args.map(x => x.includes('=') ? params.push(x) : variables.push(x))
-                    args.map(x => all.push(x))
-                    params.map(x => param_map.push({name: x.split('=')[0], value: x.split('=')[1]
-                                                                                   .replace(/\"|\'/g, '')}))
-                    block     = block.split(' ')[0]
-                }
-
-                blcks_lst.push({ block: block, id: index, type: id, args: variables, parameters: param_map, all: all })
-
-            } else if (status === 'TEXT' || status === 'VARIABLE') {
-
-                blcks_lst.push({ 
-                    block: item, 
-                    id: index, 
-                    type: status 
-                })
-
-            }
-        }
-        return blcks_lst
+        
 
     }
 
