@@ -7,7 +7,6 @@ import Parser     from './parser'
 import Conditions from './tokens/conditions'
 import FS         from 'fs'
 import PATH       from 'path'
-import { cpus } from 'os'
 
 export default class Transpiler {
 
