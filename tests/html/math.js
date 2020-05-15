@@ -1,1 +1,1 @@
-const sum=require('./sum.js');let test=coucou;test='test';
+const sum=require('./sum.js');let test=coucou;test='test';sum.print('test'

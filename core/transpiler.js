@@ -96,8 +96,21 @@ export default class Transpiler {
                   ARGS.push(arg)
                 }
               }
-              if (export_stat) code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+              if (export_stat) {
+                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+                this.functions.set(NAME, this.filename[this.parser.indexOf(parsed)])
+              }
               else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+            }
+          } else {
+            for (const mod of this.modules) {
+              for (const func of this.functions) {
+                if (mod[0] === func[1]) {
+                  if (block === func[0]) {
+                    code.push(`${mod[1]}.${func[0]}(`)
+                  }
+                }
+              }
             }
           }
 
