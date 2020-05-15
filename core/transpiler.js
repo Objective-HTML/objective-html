@@ -199,7 +199,7 @@ export default class Transpiler {
       all.set(this.filename[this.parser.indexOf(parsed)], code.join(''))
       code = []
     }
-    console.log(all)
+    
     return all
   }
 
