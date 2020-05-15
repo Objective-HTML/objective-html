@@ -66,13 +66,34 @@ export default class Transpiler {
                 this.modules.set(this.filename.filter(x => x.includes(NAME))[0], NAME)
               }
             }
-          }
+          } else if (block === 'define') {
+            let NAME = undefined
+            if (params.length > 0) {
+              for (const param of params) {
+                if (param.name === 'name') NAME = param.value
+              }
+              if (NAME) {
+                if (variables.includes(NAME)) {
+                  code.push(`${NAME}=`)
+                  if (code.filter(x => (x.startsWith('const') || x.startsWith('let')) && x.includes(NAME)).length > 0) {
+                    code[code.indexOf(code.filter(x => (x.startsWith('const') || x.startsWith('let')) && x.includes(NAME))[0])] = `let ${NAME}=`
+                  }
+                } else {
+                  variables.push(NAME)
+                  code.push(`const ${NAME}=`)
+                }
+
+              }
+            }
+          } 
 
         } else if (type === 'END') {
           if (block === 'export') {
             export_stat = false
             code.push('};')
           } else if (block === 'import') {
+            code.push(';')
+          } else if (block === 'define') {
             code.push(';')
           }
         }
