@@ -118,6 +118,19 @@ export default class Transpiler {
             }
           } else if (block === 'else') {
             code.push('else{')
+          } else if (block === 'while') {
+            if (args.length > 0) {
+              let while_args = args
+              for (const arg of while_args) {
+                for (const Condition in Conditions) {
+                  if (Condition === arg) {
+                    while_args[while_args.indexOf(arg)] = Conditions[Condition]
+                  }
+                }
+              }
+              while_args = while_args.map(x => x.match(/\w+/g) ? x.startsWith('{') && x.endsWith('}') ? x.slice(1, x.length - 1) : '\'' + x + '\'' : x)
+              code.push(`while(${while_args.join('')}){`)
+            }
           } else {
             for (const mod of this.modules) {
               for (const func of this.functions) {
@@ -165,6 +178,8 @@ export default class Transpiler {
             if (export_stat) code.push('},')
             else code.push('};')
           } else if (block === 'if' || block === 'elif' || block ==='else') {
+            code.push('}')
+          } else if (block === 'while') {
             code.push('}')
           } else {
             if (previous === 'FUNCTION') {
