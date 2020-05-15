@@ -189,6 +189,14 @@ export default class Transpiler {
           }
         }
       }
+      
+      if (code.join('').endsWith('};')) {
+        code = code.join('').split('')
+        if (code.join('').split('')[code.join('').split('').length - 3]) {
+          code[code.join('').split('').length - 3] = ''
+        }
+      }
+
       all.set(this.filename[this.parser.indexOf(parsed)], code.join(''))
       code = []
     }
