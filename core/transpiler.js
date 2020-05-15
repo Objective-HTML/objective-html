@@ -7,6 +7,7 @@ import Parser     from './parser'
 import Conditions from './tokens/conditions'
 import FS         from 'fs'
 import PATH       from 'path'
+import { cpus } from 'os'
 
 export default class Transpiler {
 
@@ -36,149 +37,50 @@ export default class Transpiler {
               id     = i.id         || new Number(0),
               type   = i.type       || new String(''),
               args   = i.args       || new Array(),
-              params = i.parameters || new Array(),
+              params = i.params     || new Array(),
               all    = i.all        || new Array()
-        if (type === 'TEXT') {
-          if (block.match(/\{(.*)\}/g)) {
-            code.push('`' +block.replace(/\{/g, '${') + '`')
-          } else {
-            code.push('\'' + block + '\'')
-          }
-        }
-        else if (type === 'VARIABLE') {
-          const block_var = block.replace(/(\{|\})/g, '')
-          if (block_var.replace(/ {2}/g, '').includes(' ')) code.push('[' + block_var.replace(/ {2}/g, '').replace(/ /g, ',') + ']')
-          else code.push(block_var)
-        }
-        else if (type === 'COMMENT') code.push(block.replace('<!--', '/*').replace('-->', '*/'))
-        else if (type.endsWith('_START')) {
-          
-          if (block === 'import') {
-            let SRC  = undefined,
-                AS   = undefined,
-                NAME = undefined
-  
-            if (params.length < 1) return new Error('test')
-  
-            for (const param of params) {
-              if (param.name === 'src')       SRC  = param.value
-              else if (param.name === 'as')   AS   = param.value
-              else if (param.name === 'name') NAME = param.value
-            }
-  
-            if (SRC) {
-              if (AS) {
-                if      (AS === 'JS')      SRC  = SRC.replace('./', '') 
-                else if (AS === 'package') SRC  = './modules/' + SRC.replace('./', '')
-              } else                       SRC  = './' + SRC + '.html'
-              if        (!NAME)            NAME = SRC.split('/').pop().replace('.html', '')
-              code.push(`const ${NAME}=require('${SRC.replace('.html', '.js')}')`)
-              this.modules.set(this.filename.filter(x => x.includes(NAME))[0], NAME)
-            }
-  
-          } else if (block === 'export') {
-  
-            code.push(`module.exports={`)
+      
+        if (type === 'START') {
+
+          if (block === 'export') {
+            code.push('module.exports={')
             export_stat = true
-  
-          } else if (block === 'define') {
+          } else if (block === 'import') {
             let NAME = undefined,
-                KWRD = ''
-            for (const param of params) {
-              if (param.name === 'name') {
-                if (!variables.includes(param.value)) {
-                  variables.push(param.value)
-                  KWRD = 'const'
-                } else {
-                  if (export_stat) code[code.indexOf(code.filter(x => x.includes(param.value))[0])] = `${param.value}:`
-                  else code[code.indexOf(code.filter(x => x.includes(param.value))[0])] = `let ${param.value}=`
-                }
-                NAME = param.value
-              }
-            }
-            if (NAME) {
-              if (export_stat) code.push(`${NAME}:`.trim())
-              else code.push(`${KWRD} ${NAME}=`.trim())
-            }
-          } else if (block === 'function') {
-            let NAME = undefined,
-                ARGS = []
+                SRC  = undefined,
+                AS   = undefined
+
             if (params.length > 0) {
               for (const param of params) {
-                if (param.name === 'name') NAME = param.value
+                if (param.name === 'src' || param.name === 'source') SRC = param.value
+                else if (param.name === 'as') AS = param.value
+                else if (param.name === 'name') NAME = param.value
               }
-            }
-            if (args.length > 0) {
-              for (const arg of args) {
-                ARGS.push(arg)
-              }
-            }
-            if (NAME) {
-  
-              if (export_stat) {
-                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join(', ') : ''}){`)
-                this.functions.set(NAME, this.filename[this.parser.indexOf(parsed)])
-              }
-              else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join(', ') : ''}){`)
-            }
-          }
-          else {
-            for (const func of this.functions) {
-              for (const mod of this.modules) {
-                if (func[1] === mod[0]) {
-                  if (func[0] === block) {
-                    if (parsed[parsed.indexOf(i) + 1].type === 'TEXT' || parsed[parsed.indexOf(i) + 1].type === 'VARIABLE') {
-                      code.push(`${mod[1]}.${block}(`)
-                    } else {
-                      console.log(all)
-                      // code.push(`${mod[1]}.${block}(${func_args.length > 0 ? func_args.join(', ') : ''}`)
-                    }
-                    
-                  }
-                }
+              if (SRC) {
+                if (AS) {
+                  if (AS === 'js') SRC = SRC.replace('./', '')
+                  else if (AS === 'package') SRC = './modules/' + SRC.replace('./', '')
+                } else SRC  = './' + SRC + '.html'
+                if (!NAME) NAME = SRC.split('/').pop().replace('.html', '')
+                code.push(`const ${NAME}=require('${SRC.replace('.html', '.js')}')`)
+                this.modules.set(this.filename.filter(x => x.includes(NAME))[0], NAME)
               }
             }
           }
-        } else if (type.endsWith('_END')) {
-  
-          if (block === 'import') {
+
+        } else if (type === 'END') {
+          if (block === 'export') {
+            export_stat = false
+            code.push('};')
+          } else if (block === 'import') {
             code.push(';')
           }
-  
-          else if (block === 'export') {
-            code.push('};')
-            export_stat = false
-          }
-  
-          else if (block === 'define') {
-  
-            if (export_stat) code.push(',')
-            else code.push(';')
-  
-          }
-          else if (block === 'function') {
-  
-            if (export_stat) code.push('},')
-            else code.push(');')
-
-          } else {
-            for (const func of this.functions) {
-              for (const mod of this.modules) {
-                if (func[1] === mod[0]) {
-                  if (func[0] === block) {
-                    code.push(');') 
-                  }
-                }
-              }
-            }
-          }
-  
         }
       }
       all.set(this.filename[this.parser.indexOf(parsed)], code.join(''))
       code = []
     }
-
+    console.log(all)
     return all
   }
 

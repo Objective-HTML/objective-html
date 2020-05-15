@@ -32,17 +32,3 @@ const files = new Transpiler(test.reverse()).transpile()
 for (const file of files) {
      FS.writeFileSync(path.resolve(path.join(file[0].replace('.html', '.js'))), file[1])
 }
-
-
-var util = require('util'),
-    vm = require('vm')
-
-let helloScript = new vm.Script(';', {
-     produceCachedData: true /* This is required for Node.js < 10.0.0 */
-});
-
-
-// or in Node.js >= 10
-let helloBuffer = helloScript.createCachedData();
-
-helloScript.runInThisContext();

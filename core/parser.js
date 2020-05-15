@@ -19,7 +19,7 @@ export default class Parser {
         let   blck_index  = -1,
               blocks      = [],
               cur_block   = [],
-              parse_blcks = new Map()
+              parse_blcks = []
         let iterator = -1
         for (const item of this.lexer) {
             const elements = item[0].split(' | '),
@@ -110,7 +110,7 @@ export default class Parser {
                                          .split('%%%')
                                          .slice(1)
                                          
-                console.log({
+                parse_blcks.push({
                     block  : Array.from(block_infos.keys())[0],
                     id     : blocks.indexOf(i),
                     type   : Array.from(block_infos.values())[0],
@@ -124,15 +124,32 @@ export default class Parser {
                 })
                 
             } else {
-                console.log({
-                    block : i,
-                    id    : blocks.indexOf(i),
-                    type  : 'TEXT'
-                })
+                if (i.length === i.split(/\{[^\}]*\}/g).join('').length) {
+                    
+                } else {
+                    if (i.match(/\{[^\}]*\}/g)) {
+                        if (i.match(/\{[^\}]*\}/g).length > 1) {
+                            parse_blcks.push({
+                                block: i,
+                                id: blocks.indexOf(i),
+                                type: 'TEXT'
+                            }) 
+
+                        } else {
+                            parse_blcks.push({
+                                block: i,
+                                id: blocks.indexOf(i),
+                                type: 'VARIABLE'
+                            })
+                        }
+                    }
+                } 
+                
+                
             }
         }
         
-        
+        return parse_blcks
 
     }
 
