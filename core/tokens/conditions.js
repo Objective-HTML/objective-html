@@ -1,7 +1,11 @@
 export default {
     'higher': '>',
     'lower': '<',
+    'less': '<',
+    'than': '',
     'equal': '==',
+    'equals': '==',
+    'to': '',
     'or': '||',
     'and': '&&',
     'minus': '-',
@@ -9,7 +13,7 @@ export default {
     'divide': '/',
     'modulo': '%',
     'multiply': '*',
-    'is': '=',
+    'is': '',
     'increment': '++',
     'decrement': '--'
 }
