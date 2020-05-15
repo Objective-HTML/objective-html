@@ -2,7 +2,12 @@
   <!-- Message printing -->
   <export>
     <function name=print message>
-        {console.log(message)}
+        <if {message} equal coucou>
+          {console.log('vous avez dit coucou')}
+        </if>
+        <else>
+          {console.log(message)}
+        </else>
     </function>
   </export>
 </objective>

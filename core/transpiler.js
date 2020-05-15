@@ -102,6 +102,22 @@ export default class Transpiler {
               }
               else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
             }
+          } else if (block === 'if' || block === 'elif') {
+            const condition = block === 'if' ? 'if' : 'else if'
+            if (args.length > 0) {
+              let cond_args = args
+              for (const arg of cond_args) {
+                for (const Condition in Conditions) {
+                  if (Condition === arg) {
+                    cond_args[cond_args.indexOf(arg)] = Conditions[Condition]
+                  }
+                }
+              }
+              cond_args = cond_args.map(x => x.match(/\w+/g) ? x.startsWith('{') && x.endsWith('}') ? x.slice(1, x.length - 1) : '\'' + x + '\'' : x)
+              code.push(`${condition}(${cond_args.join('')}){`)
+            }
+          } else if (block === 'else') {
+            code.push('else{')
           } else {
             for (const mod of this.modules) {
               for (const func of this.functions) {
@@ -148,6 +164,8 @@ export default class Transpiler {
           } else if (block === 'function') {
             if (export_stat) code.push('},')
             else code.push('};')
+          } else if (block === 'if' || block === 'elif' || block ==='else') {
+            code.push('}')
           } else {
             if (previous === 'FUNCTION') {
               code.push(');')
