@@ -39,8 +39,9 @@ export default class Transpiler {
               args   = i.args       || new Array(),
               params = i.params     || new Array(),
               all    = i.all        || new Array()
-      
-        if (type === 'START') {
+        if (type === 'TEXT') block.match(/\{\w+\}/g) !== null ? block.match(/\{\w+\}/g).length > 0 ? code.push('`' + block.replace(/\{/g, '${') + '`') : code.push('\'' + block + '\'') : code.push('\'' + block + '\'')
+        else if (type === 'VARIABLE') code.push(block.slice(1, block.length - 1))
+        else if (type === 'START') {
 
           if (block === 'export') {
             code.push('module.exports={')
@@ -94,7 +95,8 @@ export default class Transpiler {
           } else if (block === 'import') {
             code.push(';')
           } else if (block === 'define') {
-            code.push(';')
+            if (export_stat) code.push(',')
+            else code.push(';')
           }
         }
       }

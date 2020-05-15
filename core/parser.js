@@ -53,7 +53,6 @@ export default class Parser {
         }
         
         for (const i of blocks) {
-
             if (i.trim()
                  .startsWith('<') && 
                 i.trim()
@@ -125,6 +124,12 @@ export default class Parser {
                 
             } else {
                 if (i.length === i.split(/\{[^\}]*\}/g).join('').length) {
+
+                    parse_blcks.push({
+                        block: i,
+                        id: blocks.indexOf(i),
+                        type: 'TEXT'
+                    })  
                     
                 } else {
                     if (i.match(/\{[^\}]*\}/g)) {
