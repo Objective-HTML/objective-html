@@ -31,7 +31,7 @@ export default class Transpiler {
     let   export_stat = false
     
     for (const parsed of this.parser) {
-      let previous_block = ''
+      let previous = ''
       for (const i of parsed) {
         const block  = i.block      || new String(''),
               id     = i.id         || new Number(0),
@@ -108,6 +108,28 @@ export default class Transpiler {
                 if (mod[0] === func[1]) {
                   if (block === func[0]) {
                     code.push(`${mod[1]}.${func[0]}(`)
+                    if (all.length > 0) {
+                      const func_args = []
+                      for (const arg of all) {
+                        if (arg.startsWith('{') && arg.endsWith('}')) {
+                          func_args.push(arg.slice(1, arg.length - 1))
+                        } else if (arg.split('=').length > 1) {
+                          if (arg.includes('var=')) {
+                            func_args.push(arg.slice(5, arg.length - 1).split(' '))
+                          } else if (arg.includes('arg=')) {
+                            func_args.push(arg.slice(4, arg.length))
+                          }
+                        } else {
+                          func_args.push(arg)
+                        }
+                      }
+                      if (func_args.flat().length > 0) {
+                        code.push(`${func_args.flat().join(',')});`)
+                        parsed[parsed.indexOf(i) + 1] = ''
+                      }
+                    } else {
+                      previous = 'FUNCTION'
+                    }
                   }
                 }
               }
@@ -126,6 +148,11 @@ export default class Transpiler {
           } else if (block === 'function') {
             if (export_stat) code.push('},')
             else code.push('};')
+          } else {
+            if (previous === 'FUNCTION') {
+              code.push(');')
+              previous = ''
+            }
           }
         }
       }

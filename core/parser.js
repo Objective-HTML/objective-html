@@ -123,33 +123,28 @@ export default class Parser {
                 })
                 
             } else {
-                if (i.length === i.split(/\{[^\}]*\}/g).join('').length) {
 
+                if (i.match(/\{.*\}/g)) {
+                    if (i.match(/\{.*\}/g)[0].length === i.length) {
+                        parse_blcks.push({
+                            block: i,
+                            id: blocks.indexOf(i),
+                            type: 'VARIABLE'
+                        })
+                    } else {
+                        parse_blcks.push({
+                            block: i,
+                            id: blocks.indexOf(i),
+                            type: 'TEXT'
+                        })
+                    }
+                } else {
                     parse_blcks.push({
                         block: i,
                         id: blocks.indexOf(i),
                         type: 'TEXT'
-                    })  
-                    
-                } else {
-                    if (i.match(/\{[^\}]*\}/g)) {
-                        if (i.match(/\{[^\}]*\}/g).length > 1) {
-                            parse_blcks.push({
-                                block: i,
-                                id: blocks.indexOf(i),
-                                type: 'TEXT'
-                            }) 
-
-                        } else {
-                            parse_blcks.push({
-                                block: i,
-                                id: blocks.indexOf(i),
-                                type: 'VARIABLE'
-                            })
-                        }
-                    }
-                } 
-                
+                    })
+                }
                 
             }
         }
