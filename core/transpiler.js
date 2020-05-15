@@ -86,7 +86,20 @@ export default class Transpiler {
 
               }
             }
-          } 
+          } else if (block === 'function') {
+            if (params.length > 0) {
+              let NAME = undefined,
+                  ARGS = []
+              for (const param of params) if (param.name === 'name') NAME = param.value
+              if (args.length > 0) {
+                for (const arg of args) {
+                  ARGS.push(arg)
+                }
+              }
+              if (export_stat) code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+              else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+            }
+          }
 
         } else if (type === 'END') {
           if (block === 'export') {
@@ -97,6 +110,9 @@ export default class Transpiler {
           } else if (block === 'define') {
             if (export_stat) code.push(',')
             else code.push(';')
+          } else if (block === 'function') {
+            if (export_stat) code.push('},')
+            else code.push('};')
           }
         }
       }
