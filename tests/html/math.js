@@ -1,1 +1,1 @@
-const sum=require('./sum.js');let test=coucou;test='test';sum.print(`Hello ${test}`);sum.print('Coucou');while(5>4||5==5){sum.print('test');}
+const sum=require('./sum.js');let test=coucou;test='test';sum.print(`Hello ${test}`);sum.print('Coucou');const array=[ 5 , 5 , 6 ];const nombre=57;const texte='57 coucou';while(5>4||5==5){sum.print('test');}

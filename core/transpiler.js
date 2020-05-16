@@ -38,7 +38,27 @@ export default class Transpiler {
               args   = i.args       || new Array(),
               params = i.params     || new Array(),
               all    = i.all        || new Array()
-        if (type === 'TEXT') block.match(/\{\w+\}/g) !== null ? block.match(/\{\w+\}/g).length > 0 ? code.push('`' + block.replace(/\{/g, '${') + '`') : code.push('\'' + block + '\'') : code.push('\'' + block + '\'')
+        if (type === 'TEXT') {
+          if (block.includes(':')) {
+            code.push('[' + block.slice(1, block.length - 1).replace(/:/g, ',') + ']')
+          } else if (block.match(/\d+/g)) {
+            if (block.match(/\d+/g).join(' ').trim().length === block.length) {
+              code.push(parseInt(block))
+            } else {
+              code.push('\'' + block + '\'')
+            }
+          } else {
+            if (block.match(/\{\w+\}/g)) {
+              if (block.match(/\{\w+\}/g).length > 0) {
+                code.push('`' + block.replace(/\{/g, '${') + '`')
+              } else {
+                code.push('\'' + block + '\'')
+              }
+            } else {
+              code.push('\'' + block + '\'')
+            }
+          }
+        }
         else if (type === 'VARIABLE') code.push(block.slice(1, block.length - 1))
         else if (type === 'START') {
 
