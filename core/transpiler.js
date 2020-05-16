@@ -94,9 +94,11 @@ export default class Transpiler {
               }
               if (NAME) {
                 if (variables.includes(NAME)) {
-                  code.push(`${NAME}=`)
-                  if (code.filter(x => (x.startsWith('const') || x.startsWith('let')) && x.includes(NAME)).length > 0) {
-                    code[code.indexOf(code.filter(x => (x.startsWith('const') || x.startsWith('let')) && x.includes(NAME))[0])] = `let ${NAME}=`
+                  if (code.length > 0) {
+                    // code.filter(x => console.log(x.toString()))
+                    if (code.filter(x => (x.toString().startsWith('const') || x.toString().startsWith('let')) && x.toString().includes(NAME)).length > 0) {
+                      code[code.indexOf(code.filter(x => (x.toString().startsWith('const') || x.toString().startsWith('let')) && x.toString().includes(NAME))[0])] = `let ${NAME}=`
+                    }
                   }
                 } else {
                   variables.push(NAME)

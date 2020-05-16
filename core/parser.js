@@ -30,12 +30,7 @@ export default class Parser {
             if (status === 'BLOCK_START') {
                 cur_block.push(letter)
                 console.log(letter,  Array.from(this.lexer.keys())[iterator])
-            } else if (status === 'COMMENT') {
-                cur_block.push(letter)
-                if (this.lexer.get(Array.from(this.lexer.keys())[iterator]) !== 'COMMENT') {
-                    ++blck_index
-                }
-            } else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
+            }else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
             else if (status === 'BLOCK_END') {
                 cur_block.push(letter)
                 blocks.push(cur_block.join(''))

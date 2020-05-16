@@ -1,1 +1,1 @@
-module.exports={print:function(message){'{console.log(message)''}</function>};
+module.exports={print:function(message){console.log(message)}};
