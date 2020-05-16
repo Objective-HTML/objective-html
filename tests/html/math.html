@@ -1,30 +1,19 @@
 <objective>
     <!-- test -->
     <import src=sum></import>
-    <define name=test>
-        {coucou}
-    </define>
-    <define name=test>
-        test
-    </define>
-    <print>
-        Hello {test}
-    </print>
-    <print>
-        Coucou
-    </print>
+    
     <define name=array>
-        ( 5 : 5 : 6 )
+        5 : 10 : 20
     </define>
-    <define name=nombre>
-        57
+
+    <define name=iterator>
+        0
     </define>
-    <define name=texte>
-        57 coucou
-    </define>
-    <while {5} is higher than {4} or {5} equal to {5}> 
+
+    <while {iterator} is less than {array.length}>
         <print>
-            test
+            {array[iterator]}
         </print>
     </while>
+
 </objective>

@@ -20,7 +20,7 @@ export default class Parser {
               blocks      = [],
               cur_block   = [],
               parse_blcks = []
-        let iterator = 0
+        let iterator = 1
         for (const item of this.lexer) {
             const elements = item[0].split(' | '),
                   letter   = elements[0],
@@ -28,19 +28,24 @@ export default class Parser {
                   status   = item[1]
 
             if (status === 'BLOCK_START') {
-                blck_index++
                 cur_block.push(letter)
-            } 
-            else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
+                console.log(letter,  Array.from(this.lexer.keys())[iterator])
+            } else if (status === 'COMMENT') {
+                cur_block.push(letter)
+                if (this.lexer.get(Array.from(this.lexer.keys())[iterator]) !== 'COMMENT') {
+                    ++blck_index
+                }
+            } else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
             else if (status === 'BLOCK_END') {
                 cur_block.push(letter)
                 blocks.push(cur_block.join(''))
                 cur_block = []
-            } else if (status === 'BLOCK_VALUE') {
+                ++blck_index
+            } 
+            else if (status === 'BLOCK_VALUE') {
                 if (this.lexer.get(Array.from(this.lexer.keys())[iterator - 1]) !== 'BLOCK_VALUE') {
-                    blck_index++
                     cur_block.push(letter)
-                } else if (this.lexer.get(Array.from(this.lexer.keys())[iterator + 1]) === 'BLOCK_START'){
+                } else if (this.lexer.get(Array.from(this.lexer.keys())[iterator]) !== 'BLOCK_VALUE' && this.lexer.get(Array.from(this.lexer.keys())[iterator]) !== 'VARIABLE'){
                     cur_block.push(letter)
                     blocks.push(cur_block.join(''))
                     cur_block = []
@@ -52,7 +57,7 @@ export default class Parser {
             ++iterator
 
         }
-        
+        console.log(blocks)
         for (const i of blocks) {
             if (i.trim()
                  .startsWith('<') && 
