@@ -29,7 +29,6 @@ export default class Parser {
 
             if (status === 'BLOCK_START') {
                 cur_block.push(letter)
-                console.log(letter,  Array.from(this.lexer.keys())[iterator])
             }else if (status === 'SPACE' || status === 'BLOCK_CONTENT') cur_block.push(letter)
             else if (status === 'BLOCK_END') {
                 cur_block.push(letter)
@@ -52,7 +51,6 @@ export default class Parser {
             ++iterator
 
         }
-        console.log(blocks)
         for (const i of blocks) {
             if (i.trim()
                  .startsWith('<') && 
