@@ -7,7 +7,7 @@ import Parser     from './parser'
 import Conditions from './tokens/conditions'
 import FS         from 'fs'
 import PATH       from 'path'
-import Beautifer   from 'js-beautify'
+import Beautifer  from 'js-beautify'
 
 export default class Transpiler {
 
