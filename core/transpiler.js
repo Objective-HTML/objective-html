@@ -7,6 +7,7 @@ import Parser     from './parser'
 import Conditions from './tokens/conditions'
 import FS         from 'fs'
 import PATH       from 'path'
+import Beautifer   from 'js-beautify'
 
 export default class Transpiler {
 
@@ -218,7 +219,7 @@ export default class Transpiler {
         }
       }
 
-      all.set(this.filename[this.parser.indexOf(parsed)], code.join(''))
+      all.set(this.filename[this.parser.indexOf(parsed)], Beautifer(code.join('')))
       code = []
     }
     
