@@ -32,15 +32,15 @@ export default class Transpiler {
     for (const parsed of this.parser) {
       let previous = ''
       for (const i of parsed) {
-        const block  = i.block      || new String(''),
-              id     = i.id         || new Number(0),
-              type   = i.type       || new String(''),
-              args   = i.args       || new Array(),
-              params = i.params     || new Array(),
-              all    = i.all        || new Array()
+        const block  = i.block      || String(''),
+              id     = i.id         || Number(0),
+              type   = i.type       || String(''),
+              args   = i.args       || [],
+              params = i.params     || [],
+              all    = i.all        || []
         if (type === 'TEXT') {
           if (block.includes(':')) {
-            code.push('[' + block.slice(1, block.length - 1).replace(/:/g, ',') + ']')
+            code.push('[' + block.slice(0, block.length - 1).replace(/:/g, ',') + ']')
           } else if (block.match(/\d+/g)) {
             if (block.match(/\d+/g).join(' ').trim().length === block.length) {
               code.push(parseInt(block))
