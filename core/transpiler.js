@@ -119,7 +119,7 @@ export default class Transpiler {
                 }
               }
               if (export_stat) {
-                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
+                code.push(`${NAME}:function(${ARGS.length > 0 ? ARGS.join(',') : ''}){`)
                 this.functions.set(NAME, this.filename[this.parser.indexOf(parsed)])
               }
               else code.push(`function ${NAME}(${ARGS.length > 0 ? ARGS.join('', ) : ''}){`)
