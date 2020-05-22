@@ -1,7 +1,3 @@
-const sum = require('./sum.js');
-const array = [5, 10, 2];
-let iterator = 0;
-while (iterator < array.length) {
-    sum.print(array[iterator]);
-    iterator++;
-}
+const sum = require('./sum.js')
+sum.print('Hello world!')
+sum.print(sum.join(sum.split("hello", "e")))

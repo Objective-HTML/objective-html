@@ -1,22 +1,13 @@
 <objective>
-    <!-- test -->
     <import src=sum></import>
-    
-    <define name=array>
-        5 : 10 : 20
-    </define>
-
-    <define name=iterator>
-        0
-    </define>
-
-    <while {iterator} is less than {array.length}>
-        <print>
-            {array[iterator]}
-        </print>
-        <define name=iterator>
-            {iterator++}
-        </define>
-    </while>
-
+    <print>
+        Hello world!
+    </print>
+    <print>
+        <join>
+            <split arg="hello" arg="e">
+            
+            </split>
+        </join>
+    </print>
 </objective>

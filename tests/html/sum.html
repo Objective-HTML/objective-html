@@ -1,11 +1,19 @@
 <objective>
-  <!-- Message printing -->
   <export>
-    <function name=print message>
-      {console.log(message)}
-    </function>
-    <function name=print message coucou>
-      {console.log(message)}
-    </function>
+      <function name=print message>
+          <return>
+              {console.log(message)}
+          </return>
+      </function>
+      <function name=split text word>
+          <return>
+              {text.split(word)}
+          </return>
+      </function>
+      <function name=join text>
+          <return>
+              {text.join('')}
+          </return>
+      </function>
   </export>
 </objective>

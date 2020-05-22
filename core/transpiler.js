@@ -31,7 +31,7 @@ export default class Transpiler {
     let   export_stat = false
     
     for (const parsed of this.parser) {
-      let previous = ''
+      let previous = []
       for (const i of parsed) {
         const block  = i.block      || String(''),
               id     = i.id         || Number(0),
@@ -175,11 +175,11 @@ export default class Transpiler {
                         }
                       }
                       if (func_args.flat().length > 0) {
-                        code.push(`${func_args.flat().join(',')});`)
+                        code.push(`${func_args.flat().join(',')})`)
                         parsed[parsed.indexOf(i) + 1] = ''
                       }
                     } else {
-                      previous = 'FUNCTION'
+                      previous.push('FUNCTION')
                     }
                   }
                 }
@@ -190,35 +190,40 @@ export default class Transpiler {
         } else if (type === 'END') {
           if (block === 'export') {
             export_stat = false
-            code.push('};')
+            code.push('}')
           } else if (block === 'import') {
-            code.push(';')
+            code.push('\n')
           } else if (block === 'define') {
             if (export_stat) code.push(',')
-            else code.push(';')
+            else code.push('')
           } else if (block === 'function') {
             if (export_stat) code.push('},')
-            else code.push('};')
+            else code.push('}')
           } else if (block === 'if' || block === 'elif' || block ==='else') {
             code.push('}')
           } else if (block === 'while') {
             code.push('}')
           } else {
-            if (previous === 'FUNCTION') {
-              code.push(');')
-              previous = ''
+            if (previous.includes('FUNCTION')) {
+              if (previous.filter(x => x === 'FUNCTION').length === previous.length) {
+                if (previous.length === 1) code.push(')\n')
+                else {
+                  for (const prev in previous) {
+                    code.push(')')
+                    previous = previous.splice(prev, 1)
+                  }
+                }
+              }
             }
           }
         }
       }
       
-      if (code.join('').endsWith('};')) {
-        code = code.join('').split('')
-        if (code.join('').split('')[code.join('').split('').length - 3]) {
-          code[code.join('').split('').length - 3] = ''
+      if (code.join('').endsWith('}')) {
+        if (code[code.length - 2].endsWith(',')) {
+          code[code.length - 2] = code[code.length - 2].replace(',', '')
         }
       }
-
       all.set(this.filename[this.parser.indexOf(parsed)], Beautifer(code.join('')))
       code = []
     }
