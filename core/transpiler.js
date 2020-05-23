@@ -41,7 +41,7 @@ export default class Transpiler {
               all    = i.all        || []
         if (type === 'TEXT') {
           if (block.includes(':')) {
-            code.push('[' + block.slice(0, block.length - 1).replace(/:/g, ',') + ']')
+            code.push('[' + block.replace(/:/g, ',') + ']')
           } else if (block.match(/\d+/g)) {
             if (block.match(/\d+/g).join(' ').trim().length === block.length) {
               code.push(parseInt(block))
@@ -96,7 +96,6 @@ export default class Transpiler {
               if (NAME) {
                 if (variables.includes(NAME)) {
                   if (code.length > 0) {
-                    // code.filter(x => console.log(x.toString()))
                     if (code.filter(x => (x.toString().startsWith('const') || x.toString().startsWith('let')) && x.toString().includes(NAME)).length > 0) {
                       code[code.indexOf(code.filter(x => (x.toString().startsWith('const') || x.toString().startsWith('let')) && x.toString().includes(NAME))[0])] = `let ${NAME}=`
                     }
@@ -206,7 +205,10 @@ export default class Transpiler {
           } else {
             if (previous.includes('FUNCTION')) {
               if (previous.filter(x => x === 'FUNCTION').length === previous.length) {
-                if (previous.length === 1) code.push(')\n')
+                if (previous.length === 1) {
+                  code.push(')\n')
+                  previous = []
+                }
                 else {
                   for (const prev in previous) {
                     code.push(')')
@@ -218,7 +220,6 @@ export default class Transpiler {
           }
         }
       }
-      
       if (code.join('').endsWith('}')) {
         if (code[code.length - 2].endsWith(',')) {
           code[code.length - 2] = code[code.length - 2].replace(',', '')
