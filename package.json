@@ -8,8 +8,7 @@
   },
   "scripts": {
     "nodemon": "nodemon --exec babel-node html.js",
-    "start": "babel-node html.js",
-    "test": "./node_modules/.bin/mocha ./tests/ --require @babel/register --watch"
+    "start": "babel-node html.js"
   },
   "repository": {
     "type": "git",
@@ -28,13 +27,11 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/register": "^7.9.0",
     "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
-    "chai": "^4.2.0",
-    "mocha": "^7.1.2",
-    "nodemon": "^2.0.3"
+    "babel-preset-es2015": "^6.24.1"
   },
   "dependencies": {
     "babel-polyfill": "^6.26.0",
-    "js-beautify": "^1.11.0"
+    "js-beautify": "^1.11.0",
+    "parse5": "^6.0.0"
   }
 }
