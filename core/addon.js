@@ -42,6 +42,15 @@ export default class ObjectiveAddon extends ObjectiveHTML {
                 })
             }
         }
+        
+        if (object.onText) {
+            if (typeof object.onText === 'function') {
+                this.on('text', (data, index) => {
+                    object.onText(data, index)
+                })
+            }
+        }
+        
 
     }
 
