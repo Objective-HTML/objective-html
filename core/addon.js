@@ -31,6 +31,7 @@ export default class ObjectiveAddon extends ObjectiveHTML {
                 })
             }
         }
+
         if (object.onOpen) {
             if (typeof object.onOpen === 'function') {
                 this.on('open', (data, index) => {
@@ -51,7 +52,6 @@ export default class ObjectiveAddon extends ObjectiveHTML {
             }
         }
         
-
     }
 
 }
