@@ -3,6 +3,8 @@
              Parser
 //////////////////////////////*/
 
+import ObjectiveEmitter from './events'
+
 export default class ObjectiveHTML extends ObjectiveEmitter {
 
     constructor (content) {
