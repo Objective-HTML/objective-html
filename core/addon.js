@@ -3,7 +3,10 @@
              Addons
 //////////////////////////////*/
 
+import FS            from 'fs'
+import PATH          from 'path'
 import ObjectiveHTML from './parser'
+import parse         from 'parse5'
 
 export default class ObjectiveAddon extends ObjectiveHTML {
 
@@ -11,6 +14,28 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         
         super(content)
         
+
+    }
+
+    load (callback) {
+
+        FS.readdir(PATH.resolve(PATH.join(__dirname, 'addons')), (error, content) => {
+            if (error) throw error
+            
+            for (const file of content) {
+                import(PATH.resolve(PATH.join(__dirname, 'addons', file))).then(value => {
+                    
+                    const addon = value.default
+                    this.create(new addon().export())
+
+                    if (content.indexOf(file) + 1 === content.length) {
+                        callback()
+                    }
+
+                })
+            }
+        })
+
     }
 
     create (object = {

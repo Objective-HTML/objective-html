@@ -15,7 +15,7 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
 
     }
 
-    async makeAST (item, index) {
+    makeAST (item, index) {
 
         if (item) {
 
@@ -30,7 +30,7 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
 
     }
 
-    async parse () {
+    parse () {
         this.makeAST(this.content[0], 0) 
     }
 
