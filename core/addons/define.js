@@ -3,6 +3,8 @@
             Printing    
 //////////////////////////////*/
 
+const variables = []
+
 export default class Print {
 
     get tagname () {
@@ -15,7 +17,13 @@ export default class Print {
 
     onOpen  (tag, index, attrs) {
 
-        console.log('var', attrs.filter(x => x.name === 'name')[0].value, '=')
+        const match = attrs.filter(x => x.name === 'name')[0].value
+        if (!variables.includes(match)) {
+            console.log('var', match, '=')
+            variables.push(match)
+        } else {
+            console.log(match, '=')
+        }
     }
 
     export () {
