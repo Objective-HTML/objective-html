@@ -10,12 +10,12 @@ export default class Print {
     }
 
     onClose (tag) {
-        console.log(tag)
+        console.log(')')
     }
 
     onOpen  (tag, attributes) {
 
-        console.log(tag, attributes)
+        console.log('console.log(')
     }
 
     export () {
