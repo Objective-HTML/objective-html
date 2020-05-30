@@ -6,16 +6,16 @@
 export default class Print {
 
     get tagname () {
-        return 'print'
+        return 'define'
     }
 
     onClose () {
-        console.log(');')
+        console.log(';')
     }
 
-    onOpen  () {
+    onOpen  (tag, index, attrs) {
 
-        console.log('console.log(')
+        console.log('var', attrs.filter(x => x.name === 'name')[0].value, '=')
     }
 
     export () {
