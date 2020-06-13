@@ -3,19 +3,22 @@
             Printing
 //////////////////////////////*/
 
-export default class Array {
+export default class Print {
 
     get tagname () {
-        return 'array'
+        return 'for'
     }
 
     onClose () {
-        return ']'
+        return '}'
     }
 
-    onOpen  (tag, index, attrs) {
+    onOpen (tag, index, attrs) {
 
-        return '['
+        const iterator = attrs.filter(x => x.name === 'var')[0].value,
+              array    = attrs.filter(x => x.name === 'in')[0].value
+
+        return `for(var ${iterator.slice(1, iterator.length - 1)} of ${array.slice(1, array.length - 1)}) {`
 
     }
 

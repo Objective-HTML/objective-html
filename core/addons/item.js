@@ -3,8 +3,6 @@
             Printing
 //////////////////////////////*/
 
-const variables = []
-
 export default class Print {
 
     get tagname () {
