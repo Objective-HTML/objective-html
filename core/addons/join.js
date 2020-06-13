@@ -22,11 +22,11 @@ export default class Join {
     export () {
 
         return {
-            tagName : this.tagname ?? undefined,
-            onClose : this.onClose ?? undefined,
-            onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined,
-            inject  : this.inject  ?? undefined
+            tagName : this.tagname,
+            onClose : this.onClose,
+            onOpen  : this.onOpen ,
+            onText  : this.onText ,
+            inject  : this.inject
         }
 
     }
