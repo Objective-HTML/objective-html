@@ -61,7 +61,7 @@ export default class ObjectiveAddon extends ObjectiveHTML {
             if (typeof object.onOpen === 'function') {
                 this.on('open', (data, index) => {
                     if (data.startsWith('<' + object.tagName)) {
-                        const attributes = parse.parseFragment(data).childNodes[0].attrs
+                        let attributes = parse.parseFragment(data).childNodes[0].attrs.map(x => x = {name: x.name, value: x.value = '"' + x.value + '"'})
                         if (!attributes) attributes = []
                         object.onOpen(data, index, attributes)
                     }
