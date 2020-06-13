@@ -13,7 +13,8 @@ export default class ObjectiveAddon extends ObjectiveHTML {
     constructor (content) {
         
         super(content)
-        
+
+        this.built = []
 
     }
 
@@ -42,7 +43,8 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         tagName : String,
         onOpen  : Function,
         onClose : Function,
-        onText  : Function
+        onText  : Function,
+        inject  : Function
     }) {
 
         if (typeof object !== 'object') return
@@ -51,7 +53,7 @@ export default class ObjectiveAddon extends ObjectiveHTML {
             if (typeof object.onClose === 'function') {
                 this.on('close', (data, index) => {
                     if (data.startsWith('</' + object.tagName)) {
-                        object.onClose(data, index)
+                        this.built.push(object.onClose(data, index))
                     }
                 })
             }
@@ -63,7 +65,7 @@ export default class ObjectiveAddon extends ObjectiveHTML {
                     if (data.startsWith('<' + object.tagName)) {
                         let attributes = parse.parseFragment(data).childNodes[0].attrs.map(x => x = {name: x.name, value: x.value = '"' + x.value + '"'})
                         if (!attributes) attributes = []
-                        object.onOpen(data, index, attributes)
+                        this.built.push(object.onOpen(data, index, attributes))
                     }
                 })
             }
@@ -72,8 +74,17 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         if (object.onText) {
             if (typeof object.onText === 'function') {
                 this.on('text', (data, index) => {
-                    object.onText(data, index)
+                    this.built.push(object.onText(data, index))
                 })
+            }
+        }
+
+        if (object.inject) {
+            if (typeof object.inject === 'function') {
+                const injectCode = object.inject()
+                for (const code of injectCode) {
+                    this.built.unshift(code)
+                }
             }
         }
         

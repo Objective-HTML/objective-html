@@ -12,17 +12,17 @@ export default class Print {
     }
 
     onClose () {
-        console.log(';')
+        return ';'
     }
 
     onOpen  (tag, index, attrs) {
 
         const match = attrs.filter(x => x.name === 'name')[0].value
         if (!variables.includes(match)) {
-            console.log('var', match, '=')
             variables.push(match)
+            return 'var ' + match + ' ='
         } else {
-            console.log(match, '=')
+            return match + ' ='
         }
     }
 
@@ -32,7 +32,8 @@ export default class Print {
             tagName : this.tagname ?? undefined,
             onClose : this.onClose ?? undefined,
             onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined
+            onText  : this.onText  ?? undefined,
+            inject  : this.inject  ?? undefined
         }
 
     }

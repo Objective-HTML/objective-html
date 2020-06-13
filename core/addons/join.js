@@ -12,18 +12,11 @@ export default class Join {
     }
 
     onClose () {
-        console.log(';')
     }
 
     onOpen  (tag, index, attrs) {
 
-        const match = attrs.filter(x => x.name === 'name')[0].value
-        if (!variables.includes(match)) {
-            console.log('var', match, '=')
-            variables.push(match)
-        } else {
-            console.log(match, '=')
-        }
+
     }
 
     export () {
@@ -32,7 +25,8 @@ export default class Join {
             tagName : this.tagname ?? undefined,
             onClose : this.onClose ?? undefined,
             onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined
+            onText  : this.onText  ?? undefined,
+            inject  : this.inject  ?? undefined
         }
 
     }

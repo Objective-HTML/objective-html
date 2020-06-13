@@ -5,11 +5,6 @@
 
 const variables = []
 
-function split (delimiter, word) {
-
-    return word.split(delimiter)
-}
-
 export default class Split {
 
     get tagname () {
@@ -17,7 +12,7 @@ export default class Split {
     }
 
     onClose () {
-        console.log(')')
+        return ')'
     }
 
     onOpen  (tag, index, attrs) {
@@ -25,7 +20,15 @@ export default class Split {
         const delimiters = attrs.filter(x => x.name === 'at'),
               delimiter  = delimiters[delimiters.length - 1]
 
-        console.log(`join(${delimiter.value}, `)
+        return `split(${delimiter.value}, `
+
+    }
+
+    inject () {
+
+        return [
+            'function split(delimiter,word){return word.split(delimiter);}'
+        ]
 
     }
 
@@ -35,9 +38,11 @@ export default class Split {
             tagName : this.tagname ?? undefined,
             onClose : this.onClose ?? undefined,
             onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined
+            onText  : this.onText  ?? undefined,
+            inject  : this.inject  ?? undefined
         }
 
     }
+
 
 }

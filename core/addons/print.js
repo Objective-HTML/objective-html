@@ -10,12 +10,12 @@ export default class Print {
     }
 
     onClose () {
-        console.log(');')
+        return ');'
     }
 
     onOpen  () {
 
-        console.log('console.log(')
+        return 'console.log('
     }
 
     export () {
@@ -24,7 +24,8 @@ export default class Print {
             tagName : this.tagname ?? undefined,
             onClose : this.onClose ?? undefined,
             onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined
+            onText  : this.onText  ?? undefined,
+            inject  : this.inject  ?? undefined
         }
 
     }

@@ -18,7 +18,7 @@ export default class Main extends ObjectiveAddon {
 
      }
 
-     init () {
+     init (callback) {
           
           FS.readdir(PATH.resolve(PATH.join(__dirname, 'core', 'addons')), 'UTF-8', (error, content) => {
                if (error) throw error
@@ -31,6 +31,7 @@ export default class Main extends ObjectiveAddon {
      
                          if (content.indexOf(file) + 1 === content.length) {
                              this.parse()
+                              callback(this.built)
                          }
      
                      })
@@ -41,4 +42,6 @@ export default class Main extends ObjectiveAddon {
 
 }
 
-new Main(content).init()
+new Main(content).init(built => {
+     console.log(built)
+})

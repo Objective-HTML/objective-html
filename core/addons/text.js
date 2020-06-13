@@ -12,17 +12,17 @@ export default class Text {
                 for (const match of matches) {
                     content = content.replace(match, '$' + match)
                 }
-                console.log(content)
+                return content
             } else if (matches[0].length === content.length) {
-                console.log(content.slice(1, content.length - 1))
+                return content.slice(1, content.length - 1)
             } else {
                 for (const match of matches) {
                     content = content.replace(match, '$' + match)
                 }
-                console.log(content)
+                return content
             }
         } else {
-            console.log('\'' + content + '\'')
+            return '\'' + content + '\''
         }
 
     }
@@ -33,7 +33,8 @@ export default class Text {
             tagName : this.tagname ?? undefined,
             onClose : this.onClose ?? undefined,
             onOpen  : this.onOpen  ?? undefined,
-            onText  : this.onText  ?? undefined
+            onText  : this.onText  ?? undefined,
+            inject  : this.inject  ?? undefined
         }
 
     }
