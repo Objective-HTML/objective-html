@@ -3,12 +3,12 @@
               Main
 //////////////////////////////*/
 
-import FS            from 'fs'
-import PATH          from 'path'
+import FS             from 'fs'
+import PATH           from 'path'
 import ObjectiveAddon from './core/addon'
+import Beautify       from 'js-beautify'
 
 const content = FS.readFileSync('tests/index.html', 'UTF-8')
-
 
 export default class Main extends ObjectiveAddon {
 
@@ -43,5 +43,5 @@ export default class Main extends ObjectiveAddon {
 }
 
 new Main(content).init(built => {
-     console.log(built)
+     eval(Beautify(built.join('')))
 })

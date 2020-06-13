@@ -20,9 +20,9 @@ export default class Print {
         const match = attrs.filter(x => x.name === 'name')[0].value
         if (!variables.includes(match)) {
             variables.push(match)
-            return 'var ' + match + ' ='
+            return 'var ' + match.slice(1, match.length - 1) + ' ='
         } else {
-            return match + ' ='
+            return match.slice(1, match.length - 1) + ' ='
         }
     }
 
