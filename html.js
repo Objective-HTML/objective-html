@@ -43,5 +43,5 @@ export default class Main extends ObjectiveAddon {
 }
 
 new Main(content).init(built => {
-     eval(Beautify(built.join('')))
+     console.log(Beautify(built.join('')))
 })
