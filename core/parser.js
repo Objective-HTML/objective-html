@@ -10,28 +10,107 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
     constructor (content) {
 
         super()
-        this.content = content.split(/\r?\n/g)
+        this.content = [content.split(/\r?\n/g)
                               .map(x => x.trim())
+                              .filter(x => x !== '')
+                              .join('')]
+        this.context = 'NONE'
+        this.lexer   = new Map()
 
     }
 
-    makeAST (item, index) {
+    readHTML (index) {
+        if (!this.content[index]) return
+        const line = [...this.content[index]]
 
-        if (item) {
+        for (const char_index in line) {
 
-            if (item.match(/<[^\/].*?>/g)) this.emit('open', item.match(/<[^\/].*?>/g)[0], index)
-            if (/<.*?>(.*?)<\/.*?>/.exec(item)) this.emit('text', /<.*?>(.*?)<\/.*?>/.exec(item)[1], index)
-            if (item.match(/^(?:(?!<.*?>).)*$/gm)) this.emit('text', item.match(/^(?:(?!<.*?>).)*$/gm)[0], index)
-            if (item.match(/<\/.*?>/g)) this.emit('close', item.match(/<\/.*?>/g)[0], index)
-            
-            this.makeAST(this.content[index + 1], index + 1)
+            const char = line[char_index]
+
+            if (!['BLOCK_CONTENT', 'BLOCK_START'].includes(this.context) && ['TEXT', 'BLOCK_END', 'NONE'].includes(this.context)) this.context = 'TEXT'
+
+            if (char === '<' && ['NONE', 'TEXT', 'BLOCK_END', 'SPACE'].includes(this.context)) this.context = 'BLOCK_START'
+            if (!['<', '>'].includes(char) && ['BLOCK_START', 'BLOCK_CONTENT'].includes(this.context)) this.context = 'BLOCK_CONTENT'
+            if (char === '>' && ['BLOCK_CONTENT', 'BLOCK_START'].includes(this.context)) this.context = 'BLOCK_END'
+
+            this.lexer.set(`${char}::${char_index}`, this.context)
+        }
+
+        this.readHTML(index + 1)
+
+    }
+
+    parse () {
+
+        this.readHTML(0)
+
+        let element = [],
+            built   = []
+
+        for (const el of this.lexer) {
+
+            const value   = el[0].split('::'),
+                  context = el[1],
+                  char    = value[0]
+
+
+            switch (context) {
+
+                case 'BLOCK_START': {
+                    built.push(element)
+                    element = []
+                    element.push(char)
+                    break
+                }
+
+                case 'BLOCK_CONTENT': {
+                    element.push(char)
+                    break
+                }
+
+                case 'BLOCK_END': {
+                    element.push(char)
+                    built.push(element)
+                    element = []
+                    break
+                }
+
+                case 'TEXT': {
+                    element.push(char)
+                    break
+                }
+
+            }
+
+        }
+
+        built = built.map(x => x.join('').trim()).filter(x => x !== '')
+
+        const result = new Map()
+
+        for (const index in built) {
+
+            const el = built[index]
+
+            if (el.startsWith('</')) {
+
+                this.emit('close', el, index)
+
+            } else if (el.startsWith('<')) {
+
+                if (el.endsWith('/>')) {
+                    this.emit('open', el, index)
+                } else {
+                    this.emit('open', el, index)
+                }
+
+            } else {
+                this.emit('text', el, index)
+            }
 
         }
 
     }
 
-    parse () {
-        this.makeAST(this.content[0], 0) 
-    }
 
 }

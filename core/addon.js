@@ -40,11 +40,12 @@ export default class ObjectiveAddon extends ObjectiveHTML {
     }
 
     create (object = {
-        tagName : String,
-        onOpen  : Function,
-        onClose : Function,
-        onText  : Function,
-        inject  : Function
+        tagName   : String   ,
+        onOpen    : Function ,
+        onClose   : Function ,
+        onText    : Function ,
+        inject    : Function ,
+        functions : Array
     }) {
 
         if (typeof object !== 'object') return
@@ -53,6 +54,8 @@ export default class ObjectiveAddon extends ObjectiveHTML {
             if (typeof object.onClose === 'function') {
                 this.on('close', (data, index) => {
                     if (data.startsWith('</' + object.tagName)) {
+                        this.built.push(object.onClose(data, index))
+                    } else if (object.tagName === 'all') {
                         this.built.push(object.onClose(data, index))
                     }
                 })
@@ -66,6 +69,8 @@ export default class ObjectiveAddon extends ObjectiveHTML {
                         let attributes = parse.parseFragment(data).childNodes[0].attrs.map(x => x = {name: x.name, value: x.value = '"' + x.value + '"'})
                         if (!attributes) attributes = []
                         this.built.push(object.onOpen(data, index, attributes))
+                    } else if (object.tagName === 'all') {
+                        this.built.push(object.onClose(data, index))
                     }
                 })
             }

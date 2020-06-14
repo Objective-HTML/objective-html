@@ -1,39 +1,14 @@
 <objective>
-    <print>
-        Hello world
-    </print>
-    <define name=username>
-        Ness
-    </define>
-    <print>
-        Hello {username}!
-    </print>
-    <define name=username>
-        World
-    </define>
-    <print>
-        <split at="">
-            Hello
-        </split>
-    </print>
-    <define name="liste">
-        <array>
-            <item>
-                coucou
-            </item>
-            <item>
-                coiucou
-            </item>
-            <array>
-                <item>
-                    ciyciy
-                </item>
-            </array>
-        </array>
-    </define>
-    <for var="i" in="liste">
+    <function name=welcome username>
         <print>
-            {i}
+            Hello {username}!
         </print>
-    </for>
+    </function>
+
+    <welcome>
+        <argument>
+            Ness
+        </argument>
+    </welcome>
+
 </objective>
