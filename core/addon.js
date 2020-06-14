@@ -63,7 +63,7 @@ export default class ObjectiveAddon extends ObjectiveHTML {
                         this.addons.push(data)
                         this.built.push(object.onClose(data, index))
                     } else if (object.tagName === 'all') {
-                        this.built.push(object.onClose(data, index))
+                        this.built.push(object.onClose(data, index, this.functions.flat()))
                     }
                 })
             }

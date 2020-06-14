@@ -3,14 +3,16 @@
             Printing
 //////////////////////////////*/
 
-export default class Print {
+export default class Newline {
 
     get tagname () {
-        return 'item'
+        return 'newline'
     }
 
-    onClose () {
-        return ', '
+    onOpen  () {
+
+        return ' + \'\\n\' + '
+
     }
 
     export () {

@@ -10,16 +10,16 @@ export default class Text {
             const matches = content.match(/{.*?}/g)
             if (matches.length > 1) {
                 for (const match of matches) {
-                    content = content.replace(match, '+ \'' + match.slice(1, match.length - 1) + '\' +')
+                    content = content.replace(match, '$' + match)
                 }
-                return '\'' + content + '\''
+                return '`' + content + '`'
             } else if (matches[0].length === content.length) {
                 return content.slice(1, content.length - 1)
             } else {
                 for (const match of matches) {
-                    content = content.replace(match, '\' + ' + match.slice(1, match.length - 1) + ' + \'')
+                    content = content.replace(match, '$' + match)
                 }
-                return '\'' + content + '\''
+                return '`' + content + '`'
             }
         } else {
             return '\'' + content + '\''

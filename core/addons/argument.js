@@ -3,14 +3,16 @@
             Printing
 //////////////////////////////*/
 
-export default class Print {
+export default class Argument {
 
     get tagname () {
-        return 'item'
+        return 'argument'
     }
 
     onClose () {
-        return ', '
+
+        return ','
+
     }
 
     export () {

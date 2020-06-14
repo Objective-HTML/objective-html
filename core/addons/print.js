@@ -10,7 +10,7 @@ export default class Print {
     }
 
     onClose () {
-        return ');'
+        return ')'
     }
 
     onOpen  () {

@@ -11,10 +11,14 @@ export default class All {
         return 'all'
     }
 
-    onClose () {
+    onClose (tag, index, functions) {
         if (stats) {
-            stats = false
-            return ')'
+            tag = tag.slice(1, tag.length - 1).trim()
+            if (tag.startsWith('/')) tag = tag.slice(1, tag.length).trim()
+            if (functions.filter(x => x.value.slice(1, x.value.length - 1) === tag).length > 0) {
+                stats = false
+                return ')'
+            }
         }
     }
 
