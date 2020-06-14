@@ -14,7 +14,9 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         
         super(content)
 
-        this.built = []
+        this.built  = []
+        this.addons = []
+        this.functions = []
 
     }
 
@@ -24,16 +26,20 @@ export default class ObjectiveAddon extends ObjectiveHTML {
             if (error) throw error
             
             for (const file of content) {
-                import(PATH.resolve(PATH.join(__dirname, 'addons', file))).then(value => {
-                    
-                    const addon = value.default
-                    this.create(new addon().export())
+                if (!file.includes('all')) {
+                    import(PATH.resolve(PATH.join(__dirname, 'addons', file))).then(value => {
 
-                    if (content.indexOf(file) + 1 === content.length) {
-                        callback()
-                    }
+                        const addon = value.default
+                        this.create(new addon().export())
 
-                })
+                        this.addons.push(addon.tagName)
+
+                        if (content.indexOf(file) + 1 === content.length) {
+                            callback()
+                        }
+
+                    })
+                }
             }
         })
 
@@ -49,11 +55,12 @@ export default class ObjectiveAddon extends ObjectiveHTML {
     }) {
 
         if (typeof object !== 'object') return
-
+        if (object.functions) this.functions = object.functions
         if (object.onClose) {
             if (typeof object.onClose === 'function') {
                 this.on('close', (data, index) => {
                     if (data.startsWith('</' + object.tagName)) {
+                        this.addons.push(data)
                         this.built.push(object.onClose(data, index))
                     } else if (object.tagName === 'all') {
                         this.built.push(object.onClose(data, index))
@@ -65,12 +72,12 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         if (object.onOpen) {
             if (typeof object.onOpen === 'function') {
                 this.on('open', (data, index) => {
+                    let attributes = parse.parseFragment(data).childNodes[0].attrs.map(x => x = {name: x.name, value: x.value = '"' + x.value + '"'})
+                    if (!attributes) attributes = []
                     if (data.startsWith('<' + object.tagName)) {
-                        let attributes = parse.parseFragment(data).childNodes[0].attrs.map(x => x = {name: x.name, value: x.value = '"' + x.value + '"'})
-                        if (!attributes) attributes = []
                         this.built.push(object.onOpen(data, index, attributes))
                     } else if (object.tagName === 'all') {
-                        this.built.push(object.onClose(data, index))
+                        this.built.push(object.onOpen(data, index, attributes, this.functions.flat()))
                     }
                 })
             }
