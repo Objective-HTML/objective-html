@@ -1,16 +1,12 @@
 <objective>
-    <function name=welcome username tst>
-        <print>
-            Hello {username} {tst}!
-        </print>
-    </function>
-
-    <welcome>
-        <argument>
+    <define name=username>
+        <text>
             Ness
-        </argument>
-        <argument>
-            tst
-        </argument>
-    </welcome>
+        </text>
+    </define>
+    <print>
+        <text>
+            Hello <variable>username</variable> !
+        </text>
+    </print>
 </objective>

@@ -7,6 +7,7 @@ import FS            from 'fs'
 import PATH          from 'path'
 import ObjectiveHTML from './parser'
 import parse         from 'parse5'
+import Glob          from 'glob'
 
 export default class ObjectiveAddon extends ObjectiveHTML {
 
@@ -14,20 +15,20 @@ export default class ObjectiveAddon extends ObjectiveHTML {
         
         super(content)
 
-        this.built  = []
-        this.addons = []
+        this.built     = []
+        this.addons    = []
         this.functions = []
+        this.files     = []
 
     }
 
     load (callback) {
 
-        FS.readdir(PATH.resolve(PATH.join(__dirname, 'addons')), (error, content) => {
+        Glob(PATH.resolve(PATH.join(__dirname, 'addons', '**', '*.js')), (error, content) => {
             if (error) throw error
-            
             for (const file of content) {
                 if (!file.includes('all')) {
-                    import(PATH.resolve(PATH.join(__dirname, 'addons', file))).then(value => {
+                    import(file).then(value => {
 
                         const addon = value.default
                         this.create(new addon().export())

@@ -1,24 +1,20 @@
 /*//////////////////////////////
          OBJECTIVE HTML
-            Printing
 //////////////////////////////*/
 
-export default class For {
+export default class Variable {
 
     get tagname () {
-        return 'for'
+        return 'variable'
     }
 
     onClose () {
         return '}'
     }
 
-    onOpen (tag, index, attrs) {
+    onOpen () {
 
-        const iterator = attrs.filter(x => x.name === 'var')[0].value,
-              array    = attrs.filter(x => x.name === 'in')[0].value
-
-        return `for(var ${iterator.slice(1, iterator.length - 1)} of ${array.slice(1, array.length - 1)}) {`
+        return '${'
 
     }
 

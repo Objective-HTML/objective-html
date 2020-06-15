@@ -8,6 +8,7 @@ import PATH           from 'path'
 import ObjectiveAddon from './core/addon'
 import Beautify       from 'js-beautify'
 import Uglify         from 'uglify-es'
+import Glob           from 'glob'
 
 const content = FS.readFileSync('tests/index.html', 'UTF-8')
 
@@ -20,22 +21,21 @@ export default class Main extends ObjectiveAddon {
      }
 
      init (callback) {
-          
-          FS.readdir(PATH.resolve(PATH.join(__dirname, 'core', 'addons')), 'UTF-8', (error, content) => {
+
+          Glob(PATH.resolve(PATH.join(__dirname, 'core', 'addons', '**', '*.js')), (error, content) => {
                if (error) throw error
-               if (content.length < 1) return
                for (const file of content) {
-                    import(PATH.resolve(PATH.join(__dirname, 'core', 'addons', file))).then(value => {
-                    
+                    import(file).then(value => {
+
                          const addon = value.default
                          this.create(new addon().export())
-     
+
                          if (content.indexOf(file) + 1 === content.length) {
-                             this.parse()
+                              this.parse()
                               callback(this.built)
                          }
-     
-                     })
+
+                    })
                }
           })
           
@@ -44,5 +44,5 @@ export default class Main extends ObjectiveAddon {
 }
 
 new Main(content).init(built => {
-     eval(Beautify(Uglify.minify((Beautify(built.join('\n')))).code))
+     eval(Beautify(Uglify.minify((Beautify(built.join('')))).code))
 })

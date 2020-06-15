@@ -84,7 +84,7 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
 
         }
 
-        built = built.map(x => x.join('').trim()).filter(x => x !== '')
+        built = built.map(x => x.join('')).filter(x => x !== '')
 
         const result = new Map()
 
@@ -92,13 +92,13 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
 
             const el = built[index]
 
-            if (el.startsWith('</')) {
+            if (el.trim().startsWith('</')) {
 
                 this.emit('close', el, index)
 
-            } else if (el.startsWith('<')) {
+            } else if (el.trim().startsWith('<')) {
 
-                if (el.endsWith('/>')) {
+                if (el.trim().endsWith('/>')) {
                     this.emit('open', el, index)
                 } else {
                     this.emit('open', el, index)
