@@ -28,10 +28,14 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
             const char = line[char_index]
 
             if (!['BLOCK_CONTENT', 'BLOCK_START'].includes(this.context) && ['TEXT', 'BLOCK_END', 'NONE'].includes(this.context)) this.context = 'TEXT'
-
-            if (char === '<' && ['NONE', 'TEXT', 'BLOCK_END', 'SPACE'].includes(this.context)) this.context = 'BLOCK_START'
+            if (this.context === 'COMMENT_END') this.context = 'NONE'
+            if ((char === '<' && line[parseInt(char_index) + 1] !== '!') && ['NONE', 'TEXT', 'BLOCK_END', 'SPACE'].includes(this.context)) this.context = 'BLOCK_START'
             if (!['<', '>'].includes(char) && ['BLOCK_START', 'BLOCK_CONTENT'].includes(this.context)) this.context = 'BLOCK_CONTENT'
             if (char === '>' && ['BLOCK_CONTENT', 'BLOCK_START'].includes(this.context)) this.context = 'BLOCK_END'
+
+            if (char === '<' && line[parseInt(char_index) + 1] === '!' && line[parseInt(char_index) + 2] === '-') this.context = 'COMMENT_START'
+            if (this.context === 'COMMENT_START' && char !== '-') this.context = 'COMMENT_CONTENT'
+            if (['COMMENT_START', 'COMMENT_CONTENT'].includes(this.context) && (char === '>' && line[parseInt(char_index) - 1] === '-' && line[parseInt(char_index) - 2] === '-')) this.context = 'COMMENT_END'
 
             this.lexer.set(`${char}::${char_index}`, this.context)
         }
@@ -80,32 +84,52 @@ export default class ObjectiveHTML extends ObjectiveEmitter {
                     break
                 }
 
+                case 'COMMENT_START':{
+                    built.push(element)
+                    element = []
+                    element.push(char)
+                    break
+                }
+
+                case 'COMMENT_CONTENT': {
+                    element.push(char)
+                    break
+                }
+
+                case 'COMMENT_END': {
+                    element.push(char)
+                    built.push(element)
+                    element = []
+                }
+
             }
 
         }
-
-        built = built.map(x => x.join('')).filter(x => x !== '')
-
+        built = built ? built.map(x => x.length > 0 ? x.join('') : '').filter(x => x !== '') : ''
         const result = new Map()
 
         for (const index in built) {
 
-            const el = built[index]
+            if (built.hasOwnProperty(index)) {
+                const el = built[index]
 
-            if (el.trim().startsWith('</')) {
+                if (el.trim().startsWith('</')) {
 
-                this.emit('close', el, index)
+                    this.emit('close', el, index)
 
-            } else if (el.trim().startsWith('<')) {
+                } else if (el.trim().startsWith('<') && !el.trim().startsWith('<!--')) {
 
-                if (el.trim().endsWith('/>')) {
-                    this.emit('open', el, index)
+                    if (el.trim().endsWith('/>')) {
+                        this.emit('open', el, index)
+                    } else {
+                        this.emit('open', el, index)
+                    }
+
+                } else if (el.trim().startsWith('<!--') && el.trim().endsWith('-->')) {
+                    this.emit('comment', el, index)
                 } else {
-                    this.emit('open', el, index)
+                    this.emit('text', el, index)
                 }
-
-            } else {
-                this.emit('text', el, index)
             }
 
         }
