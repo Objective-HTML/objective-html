@@ -1,26 +1,32 @@
 <objective>
     <define name=username>
-        <text>
-            Ness
-        </text>
+        Ness
     </define>
     <print>
-        <text>
-            Hello <variable>username</variable> !
-        </text>
+        Hello {username} !
     </print>
     <print>
         <array>
             <item>
-                <text>
-                    coucou
-                </text>
+                test
             </item>
             <item>
-                <text>
-                    test
-                </text>
+                test
             </item>
         </array>
     </print>
+
+    <function name=test bruh coucou>
+        <print>
+            {bruh} {coucou}
+        </print>
+    </function>
+    <test>
+        <argument>
+            test
+        </argument>
+        <argument>
+            test
+        </argument>
+    </test>
 </objective>
