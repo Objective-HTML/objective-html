@@ -1,6 +1,5 @@
 /*//////////////////////////////
          OBJECTIVE HTML
-            Printing    
 //////////////////////////////*/
 
 export default class Print {

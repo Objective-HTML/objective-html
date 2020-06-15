@@ -7,8 +7,8 @@ import FS             from 'fs'
 import PATH           from 'path'
 import ObjectiveAddon from './core/addon'
 import Beautify       from 'js-beautify'
-import Uglify         from 'uglify-es'
 import Glob           from 'glob'
+import * as babel from "@babel/core";
 
 const content = FS.readFileSync('tests/index.html', 'UTF-8')
 
@@ -44,5 +44,8 @@ export default class Main extends ObjectiveAddon {
 }
 
 new Main(content).init(built => {
-     eval(Beautify(Uglify.minify((Beautify(built.join('')))).code))
+     babel.transform(Beautify(built.join('\n')), {}, (error, result) => {
+          if (error) throw error
+          eval(result.code.split('\n').join(''))
+     })
 })

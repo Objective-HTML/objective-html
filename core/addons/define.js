@@ -1,6 +1,5 @@
 /*//////////////////////////////
          OBJECTIVE HTML
-            Printing    
 //////////////////////////////*/
 
 const variables = []
@@ -8,6 +7,7 @@ const variables = []
 export default class Print {
 
     get tagname () {
+
         return 'define'
     }
 

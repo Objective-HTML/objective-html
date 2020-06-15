@@ -2,21 +2,14 @@
          OBJECTIVE HTML
 //////////////////////////////*/
 
-export default class Variable {
+export default class Item {
 
     get tagname () {
-
-        return 'variable'
+        return 'item'
     }
 
     onClose () {
-        return '}'
-    }
-
-    onOpen () {
-
-        return '${'
-
+        return ','
     }
 
     export () {
