@@ -9,7 +9,7 @@ export default class Text {
     }
 
     onClose () {
-        return '`'
+        return '`\n'
     }
 
     onOpen () {

@@ -12,7 +12,7 @@ export default class Print {
     }
 
     onClose () {
-        return ';'
+        return '\n'
     }
 
     onOpen  (tag, index, attrs) {

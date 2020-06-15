@@ -2,14 +2,15 @@
          OBJECTIVE HTML
 //////////////////////////////*/
 
-export default class Item {
+export default class Function {
 
     get tagname () {
-        return 'item'
+        return 'function'
     }
 
-    onClose () {
-        return ',\n'
+    onOpen (tag, index, attributes) {
+
+        console.log(attributes)
     }
 
     export () {
