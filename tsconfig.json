@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "rootDirs": [
+      "src/",
+      "tests/"
+    ],
+    "outDir": "./dist",
+    "watch": true,
+    "target": "es5",
+    "module": "CommonJS",
+    "types": [
+      "node",
+      "mocha",
+      "chai"
+    ],
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "core/*": [
+        "./src/core/*"
+      ],
+      "interfaces/*": [
+        "./src/interfaces/*"
+      ],
+      "other/*": [
+        "./src/other/*"
+      ],
+      "utils": [
+        "./src/utils/*"
+      ],
+      "tests/*": [
+        "./tests/*"
+      ],
+      "modules/*": [
+        "node_modules/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "tests/**/*.ts"
+  ],
+  "files": [
+    "src/index.ts"
+  ]
+}

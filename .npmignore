@@ -1,0 +1,20 @@
+# Project
+
+assets
+sample
+tests
+
+# Node.JS
+
+node_modules
+
+#GitHub
+
+.github/
+.gitignore
+
+# Miscellaneous
+
+.eslintrc
+webpack.config.js
+tsconfig.json
