@@ -5,7 +5,6 @@ async function main() {
   try {
     const content: string = await fs.readFile('./sample/index.html', 'utf-8');
     const ast: Parser = new Parser(content);
-    console.log(ast.parse());
     console.log(ast.rawAST());
   } catch (exception) {
     throw new Error(exception);

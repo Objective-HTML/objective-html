@@ -78,6 +78,7 @@ export default class Parser {
   }
 
   public rawAST(ast: Node = this.ast, rawAst: Node = this.rawAst): Node | null {
+    if (this.ast.body.length === 0) this.parse();
     if (!ast.body) return this.rawAst;
     ast.body.map((child: Node): Boolean => {
       if (child.body) {
