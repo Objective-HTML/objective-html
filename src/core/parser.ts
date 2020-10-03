@@ -13,6 +13,12 @@ export default class Parser {
     state: '',
   };
 
+  private rawAst: Node = {
+    type: 'Program',
+    value: '',
+    body: [],
+  };
+
   constructor(private readonly code: string) {
     this.code = this.code
       .split(/\r?\n/g)
@@ -69,5 +75,27 @@ export default class Parser {
     }
     this.parse(chars, index + 1, ast);
     return this.ast;
+  }
+
+  public rawAST(ast: Node = this.ast, rawAst: Node = this.rawAst): Node | null {
+    if (!ast.body) return this.rawAst;
+    ast.body.map((child: Node): Boolean => {
+      if (child.body) {
+        rawAst.body.push({
+          type: child.type,
+          value: child.value,
+          body: [],
+        });
+        this.rawAST(child, rawAst.body.slice(-1)[0]);
+      } else {
+        rawAst.body.push({
+          type: child.type,
+          value: child.value,
+        });
+        this.rawAST(child);
+      }
+      return true;
+    });
+    return this.rawAst;
   }
 }
