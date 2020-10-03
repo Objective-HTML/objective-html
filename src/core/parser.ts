@@ -4,8 +4,8 @@ import { Node } from 'interfaces/node';
 export default class Parser {
   private ast: Node = {
     type: 'Program',
-    body: [],
     value: '',
+    body: [],
   };
 
   private current: Current = {
@@ -21,9 +21,9 @@ export default class Parser {
       .join('');
   }
 
-  protected parse(chars: string, index: number, ast: Node): Function {
+  public parse(chars: string = this.code, index: number = 0, ast: Node = this.ast): Node | null {
     const char = chars[index];
-    if (!char) return;
+    if (!char) return this.ast;
     if (char === '<') {
       if (this.current.state === 'TEXT') {
         ast.body.push({
@@ -41,7 +41,7 @@ export default class Parser {
         if (this.current.block[1] === '/') {
           this.current.block = '';
           this.parse(chars, index + 1, ast.parent);
-          return;
+          return null;
         } if (this.current.block.slice(-2)[0] === '/') {
           ast.body.push({
             type: 'Block',
@@ -50,7 +50,7 @@ export default class Parser {
           });
           this.current.block = '';
           this.parse(chars, index + 1, ast);
-          return;
+          return null;
         }
         ast.body.push({
           type: 'Node',
@@ -60,7 +60,7 @@ export default class Parser {
         });
         this.current.block = '';
         this.parse(chars, index + 1, ast.body.slice(-1)[0]);
-        return;
+        return null;
       }
       this.current.block += char;
     } else {
@@ -68,10 +68,6 @@ export default class Parser {
       this.current.block += char;
     }
     this.parse(chars, index + 1, ast);
-  }
-
-  public init(): Node {
-    this.parse(this.code, 0, this.ast);
     return this.ast;
   }
 }
