@@ -37,10 +37,14 @@ export default class Parser {
       .join('')
       .split(/(\/)?>/g)[0]
       .trim()
-      .match(/(\w+=)?(\w+|".*?")/g) ?? [];
+      .match(/(\w+=)?(\w+|".*?")?/g)
+      .filter((x: string) => x.length > 0);
     const parameters: Array<Parameter> = [];
     parametersBlock.map((parameter: string): Boolean => {
-      const splitted: Array<string> = parameter.split('=');
+      const splitted: Array<string> = parameter
+        .split('=')
+        .filter((x: string) => x.length > 0);
+      if (parameter.includes('=') && splitted.length === 1) throw new Error(`Attribute value is not specified in "${splitted[0]}" property.`);
       parameters.push({
         property: splitted[0],
         value: splitted[1] ?? null,
