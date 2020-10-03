@@ -21,24 +21,48 @@ export default class Parser {
       .join('');
   }
 
-  protected parse(chars: string, index: number, ast: Node) {
+  protected parse(chars: string, index: number, ast: Node): Function {
     const char = chars[index];
     if (!char) return;
     if (char === '<') {
       if (this.current.state === 'TEXT') {
-        console.log(this.current.block);
+        ast.body.push({
+          type: 'Text',
+          value: this.current.block,
+          parent: ast,
+        });
       }
       this.current.state = 'BLOCK';
       this.current.block = char;
     } else if (this.current.state === 'BLOCK') {
       if (char === '>') {
-        this.current.block += char;
-        console.log(this.current.block);
-        this.current.block = '';
         this.current.state = '';
-      } else {
         this.current.block += char;
+        if (this.current.block[1] === '/') {
+          this.current.block = '';
+          this.parse(chars, index + 1, ast.parent);
+          return;
+        } if (this.current.block.slice(-2)[0] === '/') {
+          ast.body.push({
+            type: 'Block',
+            value: this.current.block,
+            parent: ast,
+          });
+          this.current.block = '';
+          this.parse(chars, index + 1, ast);
+          return;
+        }
+        ast.body.push({
+          type: 'Node',
+          value: this.current.block,
+          parent: ast,
+          body: [],
+        });
+        this.current.block = '';
+        this.parse(chars, index + 1, ast.body.slice(-1)[0]);
+        return;
       }
+      this.current.block += char;
     } else {
       this.current.state = 'TEXT';
       this.current.block += char;
