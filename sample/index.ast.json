@@ -5,10 +5,31 @@
     {
       "type": "Node",
       "value": "<objective>",
+      "block": {
+        "name": "objective",
+        "params": []
+      },
       "body": [
         {
           "type": "Node",
-          "value": "<print>",
+          "value": "<print test=\"coucou\" bruh eheh=bruh>",
+          "block": {
+            "name": "print",
+            "params": [
+              {
+                "property": "test",
+                "value": "\"coucou\""
+              },
+              {
+                "property": "bruh",
+                "value": null
+              },
+              {
+                "property": "eheh",
+                "value": "bruh"
+              }
+            ]
+          },
           "body": [
             {
               "type": "Text",
@@ -16,7 +37,16 @@
             },
             {
               "type": "Block",
-              "value": "<variable username />"
+              "value": "<variable username />",
+              "block": {
+                "name": "variable",
+                "params": [
+                  {
+                    "property": "username",
+                    "value": null
+                  }
+                ]
+              }
             },
             {
               "type": "Text",
