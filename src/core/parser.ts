@@ -1,5 +1,7 @@
+import { Block } from 'interfaces/block';
 import { Current } from 'interfaces/current';
 import { Node } from 'interfaces/node';
+import { Parameter } from 'interfaces/param';
 
 export default class Parser {
   private ast: Node = {
@@ -27,6 +29,33 @@ export default class Parser {
       .join('');
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  public parseBlock(block: string): Block {
+    const parametersBlock: Array<string> = block
+      .split(/<(\/)?\w+/g)
+      .slice(1)
+      .join('')
+      .split(/(\/)?>/g)[0]
+      .trim()
+      .match(/(\w+=)?(\w+|".*?")/g) ?? [];
+    const parameters: Array<Parameter> = [];
+    parametersBlock.map((parameter: string): Boolean => {
+      const splitted: Array<string> = parameter.split('=');
+      parameters.push({
+        property: splitted[0],
+        value: splitted[1] ?? null,
+      });
+      return true;
+    });
+    const name: string = block
+      .match(/<\w+/g)[0]
+      .slice(1);
+    return {
+      name,
+      params: parameters,
+    };
+  }
+
   public parse(chars: string = this.code, index: number = 0, ast: Node = this.ast): Node | null {
     const char = chars[index];
     if (!char) return this.ast;
@@ -52,6 +81,7 @@ export default class Parser {
           ast.body.push({
             type: 'Block',
             value: this.current.block,
+            block: this.parseBlock(this.current.block),
             parent: ast,
           });
           this.current.block = '';
@@ -61,6 +91,7 @@ export default class Parser {
         ast.body.push({
           type: 'Node',
           value: this.current.block,
+          block: this.parseBlock(this.current.block),
           parent: ast,
           body: [],
         });
@@ -85,6 +116,7 @@ export default class Parser {
         rawAst.body.push({
           type: child.type,
           value: child.value,
+          block: child.block,
           body: [],
         });
         this.rawAST(child, rawAst.body.slice(-1)[0]);
@@ -92,6 +124,7 @@ export default class Parser {
         rawAst.body.push({
           type: child.type,
           value: child.value,
+          block: child.block,
         });
         this.rawAST(child);
       }
