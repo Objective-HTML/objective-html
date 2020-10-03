@@ -75,7 +75,7 @@ export default class Parser {
         this.current.block += char;
         if (this.current.block[1] === '/') {
           const blockName: string = this.current.block.slice(2, this.current.block.length - 1);
-          if (blockName !== ast.block.name) throw new Error(`Blocks <${ast.block.name}> and ${this.current.block} doesn't match.`);
+          if (blockName !== ast.block.name) throw new Error(`Blocks <${ast.block.name}> and ${this.current.block} don't match.`);
           this.current.block = '';
           this.parse(chars, index + 1, ast.parent);
           return null;
