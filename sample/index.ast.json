@@ -1,0 +1,30 @@
+{
+  "type": "Program",
+  "value": "",
+  "body": [
+    {
+      "type": "Node",
+      "value": "<objective>",
+      "body": [
+        {
+          "type": "Node",
+          "value": "<print>",
+          "body": [
+            {
+              "type": "Text",
+              "value": "Hello "
+            },
+            {
+              "type": "Block",
+              "value": "<variable username />"
+            },
+            {
+              "type": "Text",
+              "value": "!"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

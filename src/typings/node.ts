@@ -1,3 +1,4 @@
+import { Block } from './block';
 import { Types } from './types';
 
 export interface Node {
@@ -5,4 +6,5 @@ export interface Node {
   value: string,
   body?: Array<Node>,
   parent?: Node,
+  block?: Block,
 }
