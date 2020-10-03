@@ -1,5 +1,7 @@
+import { Types } from './types';
+
 export interface Node {
-  type: string,
+  type: Types,
   value: string,
   body?: [],
   parent: Node,
