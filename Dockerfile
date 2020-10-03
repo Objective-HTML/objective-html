@@ -8,7 +8,7 @@ COPY package.json package.json
 COPY tsconfig.json tsconfig.json
 COPY sample sample
 
-RUN npm i typescript fs ts-loader webpack webpack-cli @types/chai @types/mocha @types/expect @types/node --save
+RUN npm i typescript fs ts-loader webpack webpack-cli @types/jest @types/node --save
 RUN ./node_modules/.bin/webpack-cli
 
 RUN rm -rf ./node_modules/

@@ -1,5 +1,5 @@
 import Parser from 'core/parser';
-import fs from 'fs/promises';
+import { promises as fs } from 'fs';
 
 async function main() {
   try {
