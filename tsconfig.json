@@ -23,7 +23,7 @@
         "./src/core/*"
       ],
       "interfaces/*": [
-        "./src/interfaces/*"
+        "src/typings/*"
       ],
       "other/*": [
         "./src/other/*"
@@ -33,9 +33,6 @@
       ],
       "tests/*": [
         "./tests/*"
-      ],
-      "modules/*": [
-        "node_modules/*"
       ]
     }
   },
