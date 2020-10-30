@@ -1,11 +1,11 @@
-import Parser from 'core/parser';
+import Compiler from 'core/compiler';
 import { promises as fs } from 'fs';
 
 async function main() {
   try {
     const content: string = await fs.readFile('./sample/index.html', 'utf-8');
-    const ast: Parser = new Parser(content);
-    console.log(JSON.stringify(ast.rawAST(), null, 2));
+    const compiler: Compiler = new Compiler(content);
+    console.log(compiler.compile());
   } catch (exception) {
     throw new Error(exception);
   }
