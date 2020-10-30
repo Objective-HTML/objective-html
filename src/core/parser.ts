@@ -1,7 +1,7 @@
-import { Block } from 'interfaces/block';
-import { Current } from 'interfaces/current';
-import { Node } from 'interfaces/node';
-import { Parameter } from 'interfaces/param';
+import { Block } from 'interfaces/parser/block';
+import { Current } from 'interfaces/parser/current';
+import { Node } from 'interfaces/parser/node';
+import { Parameter } from 'interfaces/parser/param';
 
 export default class Parser {
   private ast: Node = {
