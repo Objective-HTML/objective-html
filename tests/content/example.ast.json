@@ -4,26 +4,25 @@
   "body": [
     {
       "type": "Node",
-      "value": "<objective>",
+      "value": "<objective namespace=index>",
       "block": {
         "name": "objective",
-        "params": []
+        "params": [
+          {
+            "property": "namespace",
+            "value": [
+              "index"
+            ]
+          }
+        ]
       },
       "body": [
         {
           "type": "Node",
-          "value": "<print class=\"test  bruh\">",
+          "value": "<print>",
           "block": {
             "name": "print",
-            "params": [
-              {
-                "property": "class",
-                "value": [
-                  "test",
-                  "bruh"
-                ]
-              }
-            ]
+            "params": []
           },
           "body": [
             {
