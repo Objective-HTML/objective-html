@@ -1,10 +1,10 @@
-import { Block } from './block';
+import { Parameter } from './param';
 import { Types } from './types';
 
 export interface Node {
   type: Types,
   value: string,
-  body?: Array<Node>,
+  body?: Node[],
   parent?: Node,
-  block?: Block,
+  params: Parameter[]
 }
