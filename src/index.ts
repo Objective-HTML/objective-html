@@ -5,7 +5,7 @@ async function main() {
   try {
     const content: string = await fs.readFile('./sample/index.html', 'utf-8');
     const compiler: Compiler = new Compiler(content);
-    console.log(compiler.compile());
+    console.log(await compiler.compile());
   } catch (exception) {
     throw new Error(exception);
   }

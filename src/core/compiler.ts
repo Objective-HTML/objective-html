@@ -13,7 +13,7 @@ export default class Compiler {
 
   private readonly parameters: Parameters;
 
-  constructor(code: string, params: Parameters = { cwd: process.cwd() }) {
+  constructor(code: string, params: Parameters = { cwd: process.cwd(), output: 'js' }) {
     this.parameters = params;
     const parser: Parser = new Parser(code);
     this.ast = parser.parse();
