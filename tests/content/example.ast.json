@@ -12,10 +12,18 @@
       "body": [
         {
           "type": "Node",
-          "value": "<print>",
+          "value": "<print class=\"test  bruh\">",
           "block": {
             "name": "print",
-            "params": []
+            "params": [
+              {
+                "property": "class",
+                "value": [
+                  "test",
+                  "bruh"
+                ]
+              }
+            ]
           },
           "body": [
             {

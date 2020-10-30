@@ -30,6 +30,13 @@ export default class Parser {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  private removeStrings(value: string): string {
+    if (value.startsWith('"') && value.endsWith('"')) {
+      return value.slice(1, value.length - 1);
+    }
+    return value;
+  }
+
   public parseBlock(block: string): Block {
     const parametersBlock: Array<string> = block
       .split(/<(\/)?\w+/g)
@@ -47,7 +54,7 @@ export default class Parser {
       if (parameter.includes('=') && splitted.length === 1) throw new Error(`Attribute value is not specified in "${splitted[0]}" property.`);
       parameters.push({
         property: splitted[0],
-        value: splitted[1] ?? null,
+        value: this.removeStrings(splitted[1]).split(/\s+/g) ?? null,
       });
       return true;
     });

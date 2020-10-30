@@ -1,4 +1,4 @@
 export interface Parameter {
   property: string,
-  value: string | null,
+  value: string | null | string[],
 }
