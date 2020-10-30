@@ -3,6 +3,7 @@ import { Parameters } from 'interfaces/compiler/parameters';
 import { promises as fs } from 'fs';
 import { Block } from 'interfaces/parser/block';
 import { get } from 'src/block';
+import { getLanguage } from 'src/language';
 import * as Path from 'path';
 import Parser from './parser';
 
@@ -65,6 +66,7 @@ export default class Compiler {
   }
 
   public async compile(): Promise<string> {
+    console.log(getLanguage(this.parameters));
     if (['js', 'javascript'].includes(this.parameters.output)) {
       this.Javascript(this.ast);
     }
