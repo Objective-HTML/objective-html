@@ -1,0 +1,1 @@
+export function ns_index() {console.log("Hello world!");}ns_index();

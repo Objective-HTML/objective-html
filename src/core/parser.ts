@@ -31,6 +31,7 @@ export default class Parser {
 
   // eslint-disable-next-line class-methods-use-this
   private removeStrings(value: string): string {
+    if (!value) return value;
     if (value.startsWith('"') && value.endsWith('"')) {
       return value.slice(1, value.length - 1);
     }

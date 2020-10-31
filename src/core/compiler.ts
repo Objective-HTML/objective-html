@@ -10,10 +10,6 @@ export default class Compiler {
 
   private readonly parser: Parser;
 
-  private code: string[] = [];
-
-  private output: string = this.code.join('\n');
-
   private readonly parameters: Parameters;
 
   constructor(code: string, params: Parameters = { cwd: process.cwd(), output: 'js' }) {
@@ -37,7 +33,7 @@ export default class Compiler {
     }
   }
 
-  public async compile(): Promise<string> {
+  public async compile(): Promise<Boolean> {
     try {
       const language: string = getLanguage(this.parameters);
       const Module = (await import(Path.resolve(Path.join(process.cwd(), 'src', 'core', language, 'handler.ts')))).default;
@@ -46,6 +42,6 @@ export default class Compiler {
     } catch (exception) {
       throw new Error(exception);
     }
-    return this.output;
+    return true;
   }
 }
